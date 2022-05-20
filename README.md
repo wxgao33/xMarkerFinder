@@ -19,5 +19,18 @@ The time needed for the whole workflow depends on the dataset size, selected alg
 Preliminary understanding of shell scripts would allow users to complete the whole workflow. Intermediate experience of R and python would facilitate users to better interpret and modify the codes.
 #### 8. Is MarkerFinder a pipeline for meta-analysis?  
 Yes. MarkerFinder aims to integrate different datasets and establish replicable markers. However, MarkerFinder differs from systematic review as it integrates original datasets instead of the respective results.
+### Part II Data processing
+#### 1.	What kind of data should I use for MarkerFinder?
+Processed microbial absolute abundance matrices and corresponding metadata are required. For cross-cohort analysis, we require merged datasets from at least three cohorts to accomplish the full protocol with internal validations. MarkerFinder is well adapted to microbial taxonomic and functional profiles derived from both amplicon and whole metagenomics sequencing data, as well as other omics layers, including but not limited to metatranscriptomics, metaproteomics, and metabolomics.
+#### 2. If I don’t have the corresponding metadata, can I still use MarkerFinder?
+To perform meta-analysis, corresponding sample groups are required. Other metadata indices, such as body mass index, age and gender are recommended but not necessary.
+#### 3.	Why should I perform data filtering?
+To identify a replicable panel of microbial markers, we need to exclude rare microbial features, those with low occurrence rates and relative abundances across cohorts as they are not ideal candidates as global markers.
+#### 4.	Why should I normalize my data?
+To mitigate challenges induced by different number of sequencing (e.g. library sizes), microbial profiles are converted to relative abundances for subsequent analysis in MarkerFinder.
+#### 5.	Why should I perform data filtering?
+To identify a replicable panel of microbial markers, we need to exclude rare microbial features, those with low occurrence rates and relative abundances across cohorts as they are not ideal candidates as global markers.
+#### 6.	What does the training and test set do and why should I separate them?
+To ensure models’ reliability, datasets are split to training and test set. Training set is used to train and have the model learn the hidden pattern. Test set is used to test the model after completing the training process and provides unbiased final model performance metric results.  
 
 
