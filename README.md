@@ -32,5 +32,13 @@ To mitigate challenges induced by different number of sequencing (e.g. library s
 To identify a replicable panel of microbial markers, we need to exclude rare microbial features, those with low occurrence rates and relative abundances across cohorts as they are not ideal candidates as global markers.
 #### 6.	What does the training and test set do and why should I separate them?
 To ensure models’ reliability, datasets are split to training and test set. Training set is used to train and have the model learn the hidden pattern. Test set is used to test the model after completing the training process and provides unbiased final model performance metric results.  
-
+### Part III Using MarkerFinder
+#### 1.	How to solve installation errors?
+Potential installation problems and solutions are provided along in our manuscript, and most problems would be avoided by simply using the docker image we provided instead of running all scripts locally.
+#### 2.	What machine learning classifier should I choose?
+Step 6 provides the evaluation of multiple commonly used algorithms in machine learning, and users could choose the most suitable algorithm based on these results. However, due to its robustness and interpretability, Random Forest classifiers are deemed suitable for most microbiome datasets. Therefore, step 6 is not compulsory and we recommend users to build Random Forest models first, move to other classifiers if they do not perform well.
+#### 3.	How to choose suitable parameters when running MMIC?
+For most scenarios, the default parameters would work. For further exploration, users are encouraged to try different parameters to get better results.
+#### 4.	What is an AUC and how to interpret it?
+AUC is the area under the ROC curve (the plot of the Sensitivity as y-axis versus 1-Specificity as x-axis). A perfect classifier gives an AUC of 1 while a simple classifier that makes completely random guesses gives an AUC of 0.5.
 
