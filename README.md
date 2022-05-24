@@ -1,7 +1,8 @@
 # Identification and validation of microbial marker from cross-cohort datasets using MarkerFinder
 MarkerFinder is a curated four-stage workflow for microbiome researches including cross-cohort differential signature analysis, model construction, model validation and marker identification.
 ## User Tutorial
-`$ Rscript 1_Normalization.R -W /workplace/ -p abundance.txt -o TEST`
+#### 1
+  `$ Rscript 1_Normalization.R -W /workplace/ -p abundance.txt -o TEST`
 
 ## FAQs
 ### Part I General questions
