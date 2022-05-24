@@ -5,5 +5,7 @@
 - external_feature_abundance.txt: the microbial abundance profile of the external test dataset.  
 - other_metadata.txt: the clinical metadata of samples with other diseases used to assess the specificity of identified markers.  
 - other_feature_abundance.txt: the microbial abundance profile of samples with other diseases.
+- covariates.txt: the input covariates file for Step 4.
+- microbial_taxon.tsv: the input microbial raw count profile for Step 20.
 
 
