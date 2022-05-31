@@ -4,6 +4,7 @@ xMarkerFinder is a four-stage workflow for microbiome research including cross-c
 
 
 ## User Tutorial
+### Stage 1 Cross-cohort differential signature analysis  
 #### 1. Data normalization. 
 Convert microbial counts to relative abundance profiles of all datasets involved.  
 ```
