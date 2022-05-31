@@ -8,7 +8,7 @@ Description:
 
 Usage:
 	
-	$0 -w <workplace> -i <input microbiota file> -o <output file> -t <threads>
+	$0 -W <workplace> -i <input microbiota file> -o <output file> -t <threads>
 
 Option:
 	-w workplace
