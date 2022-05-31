@@ -1,5 +1,5 @@
 # Identification and validation of microbial marker from cross-cohort datasets using xMarkerFinder
-xMarkerFinder is a four-stage workflow for microbiome researches including cross-cohort differential signature analysis, model construction, model validation and marker identification.  
+xMarkerFinder is a four-stage workflow for microbiome research including cross-cohort differential signature analysis, model construction, model validation, and marker identification.  
 
 
 
