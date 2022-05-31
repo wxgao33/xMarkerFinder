@@ -19,7 +19,39 @@ Users should specify these parameters or enter the default values, subsequent re
 - Input files:  
 abundance.txt: merged microbial count profile of all datasets.  
 - Output files:  
-relative_abundance.txt: normalized relative abundance profile of input dataset. Relative abundance profiles are used as input files for all subsequent analyses, except for Steps 20-21, which requires raw count file.
+relative_abundance.txt: normalized relative abundance profile of input dataset. Relative abundance profiles are used as input files for all subsequent analyses, except for Steps 20-21, which requires raw count file.  
+#### 2.	Data filtering. 
+Filter microbial signatures with low occurrence rates across cohorts.  
+```
+$ Rscript 2_Filtering.R -W /workplace/ -m metadata.txt -p relative_abundance.txt -b Cohort -t 2 -o TEST  
+```
+```
+-m the input metadata file  
+-p the input microbial relative abundance file (output file of Step 1)  
+-b the column name of batch(cohort) in metadata (default: Cohort)  
+-t the minimum number of cohorts where features have to exist (default: 2)  
+-O prefix of output files  
+```
+- Input files:  
+metadata.txt: the clinical metadata of the training dataset.  
+relative_abundance.txt: normalized relative abundance profile of the training dataset.  
+- Output files:  
+filtered_abundance.txt: filtered relative abundance profile of the training dataset, used as the input file for following steps.  
+#### 3.	Confounder analysis.   
+PERMANOVA test based on Bray-Curtis dissimilarity is performed to assess the correlation between metadata and microbial profiles and returns the coefficient of determination (R2) value and P value of every metadata index. Whichever index that contributes the most is considered as the major confounder and used later in Step 4. PCoA plot with Bray-Curtis dissimilarity is provided.  
+```
+$ Rscript 3_Confounder_analysis.R -W /workplace/ -m metadata.txt -p filtered_abundance.txt -g Group -o TEST  
+```
+```
+-m input metadata file  
+-p input filtered microbial relative abundance file  
+-g the column name of experimental interest(group) in metadata (default: Group)  
+```
+- Input files:  
+metadata.txt: the clinical metadata of the training dataset.  
+filtered_abundance.txt: filtered relative abundance profile after preprocessing.  
+- Output files:  
+metadata_microbiota.txt: the confounding effects caused by clinical information, used to determine the major batch and covariates.  
 
 ## FAQs
 ### Part I General questions
