@@ -4,8 +4,21 @@ xMarkerFinder is a four-stage workflow for microbiome research including cross-c
 
 
 ## User Tutorial
-#### 1
-  `$ Rscript 1_Normalization.R -W /workplace/ -p abundance.txt -o TEST`
+#### 1 Data normalization. 
+Convert microbial counts to relative abundance profiles of all datasets involved.  
+```
+$ Rscript 1_Normalization.R -W /workplace/ -p abundance.txt -o TEST
+```  
+Users should specify these parameters or enter the default values, subsequent repetitions of which are not listed.   
+```
+-W the Workplace of this whole protocol  
+-p the input microbial count profile  
+-o prefix of output files
+```  
+- Input files:  
+abundance.txt: merged microbial count profile of all datasets.  
+- Output files:  
+relative_abundance.txt: normalized relative abundance profile of input dataset. Relative abundance profiles are used as input files for all subsequent analyses, except for Steps 20-21, which requires raw count file.
 
 ## FAQs
 ### Part I General questions
