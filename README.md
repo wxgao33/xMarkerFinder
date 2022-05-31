@@ -4,7 +4,7 @@ xMarkerFinder is a four-stage workflow for microbiome research including cross-c
 
 
 ## User Tutorial
-#### 1 Data normalization. 
+#### 1. Data normalization. 
 Convert microbial counts to relative abundance profiles of all datasets involved.  
 ```
 $ Rscript 1_Normalization.R -W /workplace/ -p abundance.txt -o TEST
