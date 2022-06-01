@@ -145,7 +145,7 @@ class machine_learning:
         print("Final result:", optimizer.max)
         return optimizer.max
 
-    def bayesian_optimise_dt(self,X, y, clf_kfold,k_fold, n_iter = 5, init_points = 5):
+    def bayesian_optimise_dt(self,X, y, clf_kfold,k_fold, n_iter = 100, init_points = 5):
         def dt_crossval(min_samples_leaf,max_depth,min_samples_split):
             return clf_kfold(
                 data = X,

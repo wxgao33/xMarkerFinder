@@ -116,7 +116,7 @@ class machine_learning:
             if auc >= best_auc:
                 best_auc = auc
                 best_feature = select
-            print('### Best AUC :', len(select), round(best_auc, 3), round(auc, 3))
+            print('Feature number: ',len(select), 'Best_AUC: ',round(best_auc, 3), round(auc, 3))
         return best_auc, best_feature
 
 
