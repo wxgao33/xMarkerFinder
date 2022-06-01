@@ -29,7 +29,7 @@ $ Rscript 2_Filtering.R -W /workplace/ -m metadata.txt -p relative_abundance.txt
 -m the input metadata file  
 -p the input microbial relative abundance file (output file of Step 1)  
 -b the column name of batch(cohort) in metadata (default: Cohort)  
--t the minimum number of cohorts where features have to exist (default: 2)  
+-t the minimum number of cohorts where features have to occur (default: 2)  
 -O prefix of output files  
 ```
 - Input files:  
@@ -52,6 +52,148 @@ metadata.txt: the clinical metadata of the training dataset.
 filtered_abundance.txt: filtered relative abundance profile after preprocessing.  
 - Output files:  
 metadata_microbiota.txt: the confounding effects caused by clinical information, used to determine the major batch and covariates.  
+#### 4.	Differential analysis.   
+Based on the major confounder and covariates found in Step 3, cross-cohort differential signature analysis is conducted.
+```
+$ Rscript 4_Differential_analysis.R -W /workplace/ -m metadata.txt -p filtered_abundance.txt -g Group -b Cohort -c covariates.txt -o TEST
+```
+```
+-g the column name of experimental interest(group) in metadata (default: Group)  
+-b the column name of major confounder in metadata (default: Cohort)  
+-c input covariates file (tab-delimited format containing all covariates)  
+```
+- Input files:  
+metadata.txt: the clinical metadata of the training dataset.  
+filtered_abundance.txt: filtered relative abundance profile after preprocessing.  
+covariates.txt: covariates identified in Step 3 (newly generated tab-delimited file where each row is a covariate, example file is provided).  
+- Output files:  
+differential_significance_single_cohort.txt: the differential significance result in individual cohorts.  
+differential_significance.txt: meta-analytic testing results aggregating differential testing results in individual cohorts, used for next-step visualization.  
+differential_signature.txt: significantly differential signatures between groups derived from input filtered profiles, used as input files for feature selection.  
+#### 5.	Differential signature volcano plot.  
+This step provides the visualization of Step 4 with a volcano plot where the identified differential signatures are marked as red (upregulated in case group) and blue (downregulated in case group) dots.
+```
+$ python 5_Differential_signature_volcano_plot.py -W /workplace/ -i differential_significance.txt -t 0.05 -o TEST
+```
+```
+-i the input differential significance file (output file of Step 4)
+-t the threshold of P value for plotting (default: 0.05)
+```
+- Input files:  
+differential_significance.txt: meta-analytic differential testing results.  
+- Output files:  
+differential_volcano.pdf: the volcano plot of input differential significance file.  
+### Stage 2 Model construction
+#### 6.	Classifier selection.   
+This step provides optional classifier selection for subsequent steps where the performances of every ML algorithm are generally assessed using all differential signatures. The output file contains the cross-validation AUC, specificity, sensitivity, accuracy, precision and F1 score of all classification models built with these various algorithms. Users should specify the selected classifier in all following steps.
+```
+$ python 6_Classifier_selection.py -W /workplace/ -m metadata.txt -p differential_signature.txt -g Group -e exposure -s 0 -o TEST
+```
+```
+-p input differential signature file (output file of Step 4)
+-g the column name of experimental interest(group) in metadata (default: Group)
+-e the experiment group(exposure) of interest (in example data: CRC)
+-s random seed (default:0)
+```
+- Input files:  
+metadata.txt: the clinical metadata of the training dataset.  
+differential_signature.txt: significantly differential signatures between groups.  
+- Output files:  
+classifier_selection.txt: the overall cross-validation performance of all classifiers using differential signatures, used to determine the most suitable classifier.  
+#### 7.	Feature effectiveness evaluation.
+The first step of Triple-E feature selection procedure evaluates the predictive capability of every feature via constructing individual classification models respectively. Users should specify an ML algorithm here and in every future step as the overall classifier for the whole protocol from the following options: Logisticl1, Logisticl2, DecisionTree, RandomForest, GradientBoost, KNeighbors and SVC. Features with cross-validation AUC above the threshold (default:0.5) are defined as effective features and are returned in the output file.  
+```
+$ python 7_Feature_effectiveness_evaluation.py -W /workplace/ -m metadata.txt -p differential_signature.txt -g Group -e exposure -b Cohort -c classifier -s 0 -t 0.5 -o TEST
+```
+```
+-p input differential signature file (output file of Step 4)
+-b the column name of batch(cohort) in metadata (default: Cohort)
+-c selected classifier
+-t AUC threshold for defining if a feature is capable of prediction (default:0.5)
+```
+- Input files:  
+metadata.txt: the clinical metadata of the training dataset.  
+differential_signature.txt: significantly differential signatures between groups.  
+- Output files:  
+feature_auc.txt: cross-validation AUC values of individual features.  
+effective_feature.txt: features derived from differential signatures that are capable of predicting disease states, used as input file of the following step.  
+#### 8.	Collinear feature exclusion.   
+The second step of feature selection aims to exclude collinear issue caused by highly correlated features based on the result of Step 7 and returns the uncorrelated-effective features.
+```
+$ python 8_Collinear_feature_exclusion.py -W /workplace/ -p effective_feature.txt -t 0.7 -o TEST
+```
+```
+-p input effective feature file (output file of Step 7)
+-t correlation threshold for collinear feature exclusion (default:0.7)
+```
+- Input files:  
+metadata.txt: the clinical metadata of the training dataset.  
+effective_feature.txt: features with classification capability.  
+- Output files:  
+feature_correlation.txt: spearman correlation coefficient of every feature pair.  
+uncorrelated_effective_feature.txt: features derived from input effective features excluding highly collinear features, used as input file of the following step.  
+#### 9.	Recursive feature elimination.   
+The last step of feature selection recursively eliminates the weakest feature per loop to sort out the minimal panel of candidate markers.  
+```
+$ python 9_Recursive_feature_elimination.py -W /workplace/ -m metadata.txt -p uncorrelated_effective_feature.txt -g Group -e exposure -c classifier -s 0 -o TEST
+```
+```
+-p input uncorrelated-effective feature file (output file of Step 8)
+```
+- Input files:  
+metadata.txt: the clinical metadata of the training dataset.  
+uncorrelated_effective_feature.txt: independent features derived from effective features.  
+- Output files:  
+candidate_marker.txt: identified optimal panel of candidate markers, used as model input for all subsequent steps.  
+#### 10.	Boruta feature selection. 
+Besides Triple-E feature selection procedure, we provide an alternative method, feature selection with the Boruta algorithm.  
+```
+$ Rscript 10_Boruta_feature_selection.R -W /workplace/ -m metadata.txt -p differential_signature.txt -g Group -s 0 -o TEST
+```
+```
+-p input differential signature profile (output file of Step 4) or uncorrelated-effective feature file (output file of Step 8)
+```
+- Input files:  
+metadata.txt: the clinical metadata of the training dataset.  
+differential_signature.txt: differential signatures used for feature selection (could also be uncorrelated-effective features from Step 8).  
+- Output files:  
+boruta_feature_imp.txt: confirmed feature importances via Boruta algorithm.  
+boruta_selected_feature.txt: selected feature profile, used as input candidate markers for subsequent steps.  
+#### 11.	Hyperparameter tuning and cross-validation of the best-performing model.   
+Based on the selected classifier and candidate markers, the hyperparameters of the classification model are adjusted via bayesian optimization method based on cross-validation AUC. The output files contain the tuned hyperparameters and the multiple performance metric values of the constructed best-performing model.  
+```
+$ python 11_Model_construction.py -W /workplace/ -m metadata.txt -p candidate_marker.txt -g Group -e exposure -c classifier -s 0 -o TEST
+```
+```
+-p input candidate marker profile (output file of Step 9 or Step 10)
+```
+- Input files:  
+metadata.txt: the clinical metadata of the training dataset.  
+candidate_marker.txt: the optimal panel of candidate markers (or boruta_selected_feature.txt for all subsequent steps).  
+- Output files:  
+best_param.txt: the best hyperparameter combination of classification model.  
+optimal_cross_validation.txt: the overall cross-validation performance of the best-performing model.  
+#### 12.	Cross validation AUC plot. 
+This step provides the visualization for the cross-validation AUC of the best-performing model constructed in Step 11.  
+```
+$ python 12_Cross_validation_AUC_plot.py -W /workplace/ -m metadata.txt -p candidate_marker.txt -g Group -e exposure -c classifier -r best_param.txt -s 0 -o TEST
+```
+```
+-p input candidate feature file (output file of Step 9 or Step 10)
+-r input optimal hyperparameter file (output file of Step 11)
+```
+- Input files:  
+metadata.txt: the clinical metadata of the training dataset.  
+candidate_marker.txt: the optimal panel of candidate markers.  
+best_param.txt: the best hyperparameter combination of classification model.  
+- Output files:  
+cross_validation_auc.pdf: the visualization of the cross-validation AUC of the best-performing model.  
+
+
+
+
+
+
 
 ## FAQs
 ### Part I General questions
