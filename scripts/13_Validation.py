@@ -161,7 +161,7 @@ class machine_learning:
             f = dt_crossval,
             pbounds = {
                 "min_samples_split" : (0.1, 0.999),
-                "min_samples_leaf" : (0,0.5),
+                "min_samples_leaf" : (0.00001,0.5),
                 "max_depth" : (1,5)
             }
         )
@@ -345,8 +345,8 @@ for i in cohorts:
     datasets['LOCO_Group'+str(i)] = np.array([1 if i== str(args.exposure) else 0 for i in metadata[metadata[str(args.batch)]!=i][str(args.group)]])
 
 #Prepare hyperparameters
-dict = {'Logistic(l1)':ML.bayesian_optimise_l1,
-'Logistic(l2)':ML.bayesian_optimise_l2,
+dict = {'Logisticl1':ML.bayesian_optimise_l1,
+'Logisticl2':ML.bayesian_optimise_l2,
 'DecisionTree':ML.bayesian_optimise_dt,
 'RandomForest':ML.bayesian_optimise_rf,
 'GradientBoost':ML.bayesian_optimise_gb,
