@@ -1,5 +1,7 @@
 # Identification and validation of microbial marker from cross-cohort datasets using xMarkerFinder
-xMarkerFinder is a four-stage workflow for microbiome research including cross-cohort differential signature analysis, model construction, model validation, and marker identification. Detailed [scripts](./scripts), [example files](./data), and a ready-to-use [docker image](https://hub.docker.com/repository/docker/tjcadd2022/xmarkerfinder) are provided.
+xMarkerFinder is a four-stage workflow for microbiome research including cross-cohort differential signature analysis, model construction, model validation, and marker identification. Detailed [scripts](./scripts), [example files](./data), and a ready-to-use [docker image](https://hub.docker.com/repository/docker/tjcadd2022/xmarkerfinder) are provided.  
+
+![GitHub](https://img.shields.io/github/license/tjcadd2020/xMarkerFinder) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/tjcadd2020/xMarkerFinder) [![GitHub version](https://badge.fury.io/gh/tjcadd2020%2FxMarkerFinder.svg)](https://badge.fury.io/gh/tjcadd2020%2FxMarkerFinder)
 
 ## Table of Contents
 * [User Tutorial](#user-tutorial)
