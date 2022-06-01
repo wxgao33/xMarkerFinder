@@ -1,6 +1,16 @@
 # Identification and validation of microbial marker from cross-cohort datasets using xMarkerFinder
-xMarkerFinder is a four-stage workflow for microbiome research including cross-cohort differential signature analysis, model construction, model validation, and marker identification.  
+xMarkerFinder is a four-stage workflow for microbiome research including cross-cohort differential signature analysis, model construction, model validation, and marker identification. Detailed [scripts](./scripts), [example files](./data), and a ready-to-use [docker image](https://hub.docker.com/repository/docker/tjcadd2022/xmarkerfinder) are provided.
 
+## Table of Contents
+* [User Tutorial](#user-tutorial)
+  * [Stage 1 Cross-cohort differential signature analysis](#stage-1-cross-cohort-differential-signature-analysis)
+  * [Stage 2 Model construction](#stage-2-model-construction)
+  * [Stage 3 Model validation](#stage-3-model-validation)
+  * [Stage 4 Marker interpretation](#stage-4-marker-interpretation)
+* [FAQs](#faqs)
+  * [Part I General questions](#part-i-general-questions)
+  * [Part II Data processing](#part-ii-data-processing)
+  * [Part III Using xMarkerFinder](#part-iii-using-xmarkerfinder)
 
 
 ## User Tutorial
@@ -188,6 +198,204 @@ candidate_marker.txt: the optimal panel of candidate markers.
 best_param.txt: the best hyperparameter combination of classification model.  
 - Output files:  
 cross_validation_auc.pdf: the visualization of the cross-validation AUC of the best-performing model.  
+### Stage 3 Model validation
+#### 13.	Internal validations (intra-cohort, cohort-to-cohort, and LOCO validation). 
+As stated above, this step provides extensive internal validations to ensure the robustness and reproducibility of identified markers in different cohorts via intra-cohort validation, cohort-to-cohort transfer, and LOCO validation. Output files contain multiple performance metrics used to assess the markers internally, including AUC, specificity, sensitivity, accuracy, precision and F1 score.  
+```
+$ python 13_Validation.py -W /workplace/ -m metadata.txt -p candidate_marker.txt -g Group -e exposure -b Cohort -c classifier -s 0 -o TEST
+```
+```
+-p input optimal candidate marker file (output file of Step 9 or Step 10)
+```
+- Input files:  
+metadata.txt: the clinical metadata of the training dataset.  
+candidate_marker.txt: the optimal panel of candidate markers.  
+- Output files:  
+validation.txt: the overall performance of markers in internal validations.  
+#### 14.	Internal Validation grid plot. 
+This step provides the visualization of Step 13. Users could select any output file of Step 13 and draw a grid plot.  
+```
+$ python 14_Validation_grid_plot.py -W /workplace/ -p validation.txt -o TEST
+```
+```
+-p input tableau file for visualization (output file of Step 13)
+```
+- Input files:
+validation.txt: the overall performance of markers in internal validations.
+- Output files:
+validation.pdf: the visualization of input file.
+#### 15.	External test. 
+As the best-performing candidate markers and classification model are established, the test dataset is used to externally validate their generalizability. The input external metadata and microbial relative profiles need to be in the same format as initial input files for the training dataset. This step returns the overall performance of the model and its AUC plot.  
+```
+$ python 15_Test.py -W /workplace/ -m metadata.txt -p candidate_marker.txt -a external_metadata.txt -x external_profile.txt -g Group -e exposure -c classifier -r hyperparamter.txt -s 0 -o TEST
+```
+```
+-a input external metadata file for the test dataset
+-x input external microbial relative abundance file as the test dataset
+-r input optimal hyperparameter file (output file of Step 11)
+```
+- Input files:  
+metadata.txt: the clinical metadata of the training dataset.  
+candidate_marker.txt: the optimal panel of candidate markers.  
+external_metadata.txt: the clinical metadata of the external test dataset.  
+external_profile.txt: the relative abundance matrix of the external test dataset.  
+- Output files:  
+test_result.txt: the overall performance of model in external test dataset.  
+test_auc.pdf: the visualization of the AUC value in test_result.txt.  
+#### 16.	Specificity assessment.   
+To further assess markers’ specificity for experimental group of interest, they are used to construct classification models to discriminate between other related diseases and corresponding controls. Cross-validation AUC values of other classification models and visualization are returned.   
+```
+$ python 16_Specificity.py -W /workplace/ -p candidate_marker.txt -a other_metadata.txt -x other_profile.txt -g Group -e exposure -b Cohort -c classifier -r best_param.txt -s 0 -o TEST
+```
+```
+-a input metadata file of samples from other diseases
+-x input microbial relative abundance file of samples from other diseases
+-e the control group name (in example file: CTR)
+-b the column name of cohort(in example file: Cohort)
+```
+- Input files:  
+metadata.txt: the clinical metadata of the training dataset.  
+candidate_marker.txt: the optimal panel of candidate markers.  
+other_metadata.txt: the clinical metadata of samples for other diseases.  
+other_profile.txt: the relative abundance matrix of other diseases.  
+- Output files:  
+specificity_result.txt: AUC values of models constructed with candidate markers in other related diseases.  
+specificity_auc.pdf: the visualization of the specificity_result.txt.  
+#### 17.	Alternative specificity assessment.   
+Random samples of case and control class of other diseases are added into the classification model, respectively, both labelled as “control”, the variations of corresponding AUCs of which are calculated used for visualization.   
+```
+$ python 17_Specificity_add.py -W /workplace/ -m metadata.txt -p candidate_marker.txt -q external_metadata.txt -l external_profile.txt -a other_metadata.txt -x other_profile.txt -g Group -e exposure -b Cohort -c classifier -r hyperparamter.txt -n 5 -s 0 -o TEST
+```
+```
+-q input external metadata file for the test dataset
+-l input external microbial relative abundance file as the test dataset
+-a input metadata file of samples from other diseases
+-x input microbial relative abundance file of samples from other diseases
+-e the control group name (in example file: CTR)
+-b the column name of cohort(dataset)
+-n the number of samples to add into the model each time 
+```
+- Input files:  
+metadata.txt: the clinical metadata of the training dataset.  
+candidate_marker.txt: the optimal panel of candidate markers.  
+external_metadata.txt: the clinical metadata of the external test dataset.  
+external_profile.txt: the relative abundance matrix of the external test dataset.  
+other_metadata.txt: the clinical metadata of samples for other diseases.  
+other_profile.txt: the relative abundance matrix of other diseases.  
+- Output files:  
+specificity_add_result.txt: AUC values of models constructed with candidate markers in other related diseases.  
+specificity_add_auc.pdf: the visualization of the specificity_result.txt.  
+### Stage 4 Marker interpretation.
+#### 18.	Marker importance.
+Permutation feature importance is employed here to evaluate markers’ contributions in the best-performing classification model.  
+```
+$ python 18_Marker_importance.py -W /workplace/ -m metadata.txt -p candidate_marker.txt -g Group -e exposure -c classifier -r best_param.txt -s 0 -o TEST
+```
+```
+-p input candidate markers (output file of Step 9 or Step 10)
+-r input optimal hyperparameter file (output file of Step 11)
+```
+- Input files:  
+metadata.txt: the clinical metadata of the training dataset.  
+candidate_marker.txt: the optimal panel of candidate markers.  
+best_param.txt: the best hyperparameter combination of classification model.  
+- Output files:  
+marker_importance.txt: permutation feature importance of candidate markers via ten permutations.  
+#### 19.	Marker importance plot.   
+This step provides the visualization of Step 18.  
+```
+$ python 19_Marker_importance_plot.py -W /workplace/ -p feature_importance.txt -o TEST
+```
+```
+-p input file for plot (output file of Step 18)
+```
+- Input files:  
+metadata.txt: the clinical metadata of the training dataset.  
+marker_importance.txt: permutation feature importance of candidate markers.  
+- Output files:  
+marker_importance.pdf: the visualization of feature importance file.  
+#### 20.	Microbial taxon correlation.   
+Inter-microbiota correlation is calculated using FastSpar with 50 iterations and the output files contain the correlation and P value between every microbiota pair.   
+As the input file for Step 20 needs to be microbial count profile in .tsv format where each row describes a microbial taxon and each column represents a sample (could be converted profiles of all features, differential signatures, or candidate markers according to users’ need, and null values needed to be set as 0) and header needs to start with “#OTU ID”, an additional file conversion script is provided.  
+```
+$ python 20_Convert.py -W /workplace/ -p abundance.txt -s selected_feature.txt -o TEST
+```
+```
+-p input feature raw count file before normalization.
+-s selected features for calculating microbial correlation (could be differential signatures or candidate markers, output file of Step 4,9, or 10).
+```
+- Input files:  
+abundance.txt: microbial raw count profile before normalization.  
+selected_feature.txt: selected features for calculating microbial correlation (output file of Step 4, 9, or 10)  
+- Output files:  
+convert.tsv: the converted file appropriate for calculating microbial taxon correlation.  
+```
+$ ./20_Microbial_taxon_correlation.sh -W /workplace/ –i feature_abundance.tsv -o TEST -t 4
+```
+```
+-i input feature abundance file  
+-t threads of available computational source  
+```
+- Input files:  
+microbial_taxon.tsv: microbial count profile in .tsv format where each row describes a microbial taxon and each column represents a sample and the header needs to start with “#OTU ID”. Example input file is provided and users are recommended to user the conversion script above to convert files into appropriate formats.  
+-t the threads of available computational source when running  
+- Output files:  
+median_correlation.tsv: the correlation coefficients between every input taxon pair.  
+pvalues.tsv: the statistical significance of median_correlation.tsv.  
+#### 21. Microbial taxon correlation plot. 
+The visualization of Step 20 is performed using Gephi.  
+(i) Preprocess of the results of Step 20 to ensure that Step 21 only draws significant correlations (pvalues<0.05) with absolute correlation coefficients above 0.5 (default).
+```
+$ python 21_Microbial_taxon_correlation_plot.py -W /workplace/ –c median_correlation.tsv -p pvalues.tsv -t 0.5 -o TEST 
+```
+```
+-c input correlation profile (output file of Step 20)
+-p input pvalue profile (output file of Step 20)
+-t input correlation threshold (default: 0.5)
+```
+- Input files:
+median_correlation.tsv: the correlation coefficients profile (output file of Step 20).
+pvalues.tsv: the statistical significance of median_correlation.tsv (output file of Step 20).
+- Output files:
+correlation.csv: adjusted correlation profile for Gephi input, only significant correlations reserved.  
+(ii)	Open Gephi and click “File” – “Import spreadsheet”.
+<img width="415" alt="image" src="https://user-images.githubusercontent.com/54845977/171319514-fe15e6d3-6d44-43c5-9c50-3e6c5d52a5e5.png">  
+(iii) Choose the adjusted correlation profile.  
+<img width="415" alt="image" src="https://user-images.githubusercontent.com/54845977/171319788-af5776f9-7b91-4dc8-a55f-d6ccc404a2c4.png">  
+(iv)  Choose a preferable layout type to form the basic network and press the “stop” button when the network becomes stable (Fruchterman Reingold style is recommended).  
+<img width="415" alt="image" src="https://user-images.githubusercontent.com/54845977/171319813-0fed579e-6c7d-4581-bf7e-174aa8d391e1.png">   
+(v)  For further optimization of the network, appearances of nodes and edges should be adjusted according to users’ need, as well as the labels of nodes. <img width="415" alt="image" src="https://user-images.githubusercontent.com/54845977/171319835-a572168e-fad4-47d0-a03b-16b528c99d54.png">    
+
+#### 22.	Multi-omics correlation. 
+If users have multi-omics or multidimensional microbial profiles of the same dataset, the correlation between different omics or dimensions are calculated via HAllA.
+```
+$ ./22_Multi_omics_correlation.sh -W /workplace/ -i microbial_abundance_1.txt -d microbial_abundance_2.txt -o TEST
+```
+```
+-i input microbial abundance file 1
+-d input microbial abundance file 2
+```
+- Input files:  
+microbial_abundance_1.txt: microbial abundance profile 1.  
+microbial_abundance_2.txt: microbial abundance profile 2. These two input files should have the same samples (columns) but different features (rows).  
+- Output files:  
+results/all_associations.txt: associations between different omics or dimensions.  
+#### 23.	Multi-omics correlation plot. 
+The visualization step of Step 22.  
+```
+$ ./23_Multi_omics_correlation_plot.sh -W /workplace/ -i TEST
+```
+```
+-i input file for plot (output file of Step 22)
+```
+- Input files:  
+results: the result folder of Step 22  
+- Output files:  
+results/hallagram.png: the visualization of all_associations.txt with only significant associations highlighted.  
+
+
+
+
 
 
 
