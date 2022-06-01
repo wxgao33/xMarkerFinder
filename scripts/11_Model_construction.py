@@ -301,8 +301,8 @@ class machine_learning:
 ML = machine_learning()
 
 #Stage 4A Hyperparameter Tuning
-dict = {'Logistic(l1)':ML.bayesian_optimise_l1,
-'Logistic(l2)':ML.bayesian_optimise_l2,
+dict = {'Logisticl1':ML.bayesian_optimise_l1,
+'Logisticl2':ML.bayesian_optimise_l2,
 'DecisionTree':ML.bayesian_optimise_dt,
 'RandomForest':ML.bayesian_optimise_rf,
 'GradientBoost':ML.bayesian_optimise_gb,
