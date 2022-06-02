@@ -419,7 +419,7 @@ Yes. The whole xMarkerFinder workflow contains four stages (23 steps) and every 
 #### 5. Can I use xMarkerFinder on environmental microbiome researches?  
 Yes. Although xMarkerFinder is developed for human microbiome studies, it is also generalizable to other microbial habitats. 
 #### 6. How long does it take to run xMarkerFinder?  
-The time needed for the whole workflow depends on the dataset size, selected algorithm, and computational resources available. The following time estimates are based on execution of our protocol on provided example datasets with RF (Timing 1), DT (Timing 2), KNN (Timing 3), and SVC (Timing 4) using the xMarkerFinder docker image on a MacBook Pro (2.4-GHz quad-core eighth-generation Intel Core i5 processor, 16-GB 2133-MHz LPDDR3 memory).  
+The time needed for the whole workflow depends on the dataset size, selected algorithm, and computational resources available. The following time estimates are based on execution of our protocol on provided example datasets with random forest (Timing 1), decision tree (Timing 2), k-nearest neighbors (Timing 3), and support vector classifier (Timing 4) using the xMarkerFinder docker image on a MacBook Pro (2.4-GHz quad-core eighth-generation Intel Core i5 processor, 16-GB 2133-MHz LPDDR3 memory).  
 |     Step    |     Timing 1       |     Timing 2      |     Timing 3      |     Timing 4      |
 |-------------|--------------------|-------------------|-------------------|-------------------|
 |     1       |     0m20.600s      |     0m20.600s     |     0m20.600s     |     0m20.600s     |
