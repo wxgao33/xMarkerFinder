@@ -418,7 +418,32 @@ Yes. The whole xMarkerFinder workflow contains four stages (23 steps) and every 
 #### 5. Can I use xMarkerFinder on environmental microbiome researches?  
 Yes. Although xMarkerFinder is developed for human microbiome studies, it is also generalizable to other microbial habitats. 
 #### 6. How long does it take to run xMarkerFinder?  
-The time needed for the whole workflow depends on the dataset size, selected algorithm, and computational resources available. 
+The time needed for the whole workflow depends on the dataset size, selected algorithm, and computational resources available. The following time estimates are based on execution of our protocol on provided example datasets with RF (Timing 1), DT (Timing 2), KNN (Timing 3), and SVC (Timing 4) using the xMarkerFinder docker image on a MacBook Pro (2.4-GHz quad-core eighth-generation Intel Core i5 processor, 16-GB 2133-MHz LPDDR3 memory).  
+|     Step    |     Timing 1       |     Timing 2      |     Timing 3      |     Timing 4      |
+|-------------|--------------------|-------------------|-------------------|-------------------|
+|     1       |     0m20.600s      |     0m20.600s     |     0m20.600s     |     0m20.600s     |
+|     2       |     0m11.372s      |     0m11.372s     |     0m11.372s     |     0m11.372s     |
+|     3       |     1m21.356s      |     1m21.356s     |     1m21.356s     |     1m21.356s     |
+|     4       |     0m22.535s      |     0m22.535s     |     0m22.535s     |     0m22.535s     |
+|     5       |     0m2.323s       |     0m2.323s      |     0m2.323s      |     0m2.323s      |
+|     6       |     0m12.464s      |     0m12.464s     |     0m12.464s     |     0m12.464s     |
+|     7       |     1m43.332s      |     0m3.252s      |     0m3.105s      |     0m50.913s     |
+|     8       |     0m0.863s       |     0m1.015s      |     0m1.178s      |     0m1.102s      |
+|     9       |     18m37.552s     |     0m53.413s     |     0m21.103s     |     10m32.261s    |
+|     10      |     24m59.785s     |     24m59.785s    |     24m59.785s    |     24m59.785s    |
+|     11      |     8m42.417s      |     0m31.801s     |     0m39.348s     |     0m32.112s     |
+|     12      |     0m15.083s      |     0m3.149s      |     0m3.564s      |     0m3.724s      |
+|     13      |     123m20.805s    |     4m27.044s     |     6m6.515s      |     10m12.050s    |
+|     14      |     0m5.467s       |     0m4.541s      |     0m4.655s      |     0m3.428s      |
+|     15      |     0m7.120s       |     0m4.002       |     0m3.761s      |     0m3.150s      |
+|     16      |     2m25.064s      |     0m5.315s      |     0m5.287s      |     0m4.426s      |
+|     17      |     2m21.262s      |     0m6.646s      |     0m7.342s      |     0m22.211s     |
+|     18      |     0m43.265s      |     0m2.041s      |     0m18.809s     |     0m14.746s     |
+|     19      |     0m3.794s       |     0m2.938s      |     0m3.062s      |     0m2.264s      |
+|     20      |     6m32.696s      |     6m32.696s     |     6m32.696s     |     6m32.696s     |
+|     21      |     0m0.884s       |     0m0.884s      |     0m0.884s      |     0m0.884s      |
+|     22      |     7m57.119s      |     7m57.119s     |     7m57.119s     |     7m57.119s     |
+|     23      |     0m18.923s      |     0m18.923s     |     0m18.923s     |     0m18.923s     |
 #### 7. What skills are required to run xMarkerFinder?  
 Preliminary understanding of shell scripts would allow users to complete the whole workflow. Intermediate experience of R and python would facilitate users to better interpret and modify the codes.
 #### 8. Is xMarkerFinder a pipeline for meta-analysis?  
@@ -427,7 +452,7 @@ Yes. xMarkerFinder aims to integrate different datasets and establish replicable
 #### 1.	What kind of data should I use for xMarkerFinder?
 Processed microbial count matrices and corresponding metadata are required. For cross-cohort analysis, we require merged datasets from at least three cohorts in the dicovery set to accomplish the full protocol with internal validations. xMarkerFinder is well adapted to microbial taxonomic and functional profiles derived from both amplicon and whole metagenomics sequencing data, as well as other omics layers, including but not limited to metatranscriptomics, metaproteomics, and metabolomics.
 #### 2. If I don’t have the corresponding metadata, can I still use xMarkerFinder?
-To perform meta-analysis, corresponding sample groups are required. Other metadata indices, such as body mass index, age and gender are recommended but not necessary.
+To perform meta-analysis, corresponding sample groups are required. Other metadata indices, such as body mass index, age and gender are recommended but not necessary. However, it is worth noticing that the absence of metadata information might compromise the correction for confounding effects and the identification of microbial markers.  
 #### 3.	Why should I normalize my data?
 To mitigate challenges induced by different number of sequencing (e.g. library sizes), microbial count profiles are converted to relative abundances for subsequent analysis in xMarkerFinder.
 #### 4.	Why should I perform data filtering?
