@@ -217,19 +217,19 @@ validation.txt: the overall performance of markers in internal validations.
 #### 14.	Internal Validation grid plot. 
 This step provides the visualization of Step 13. Users could select any output file of Step 13 and draw a grid plot.  
 ```
-$ python 14_Validation_grid_plot.py -W /workplace/ -p validation.txt -o TEST
+$ python 14_Validation_grid_plot.py -W /workplace/ -p validation_metric.txt -o TEST
 ```
 ```
 -p input tableau file for visualization (output file of Step 13)
 ```
 - Input files:
-validation.txt: the overall performance of markers in internal validations.
+validation_metric.txt: the overall performance of markers in internal validations.
 - Output files:
 validation.pdf: the visualization of input file.
 #### 15.	External test. 
 As the best-performing candidate markers and classification model are established, the test dataset is used to externally validate their generalizability. The input external metadata and microbial relative profiles need to be in the same format as initial input files for the training dataset. This step returns the overall performance of the model and its AUC plot.  
 ```
-$ python 15_Test.py -W /workplace/ -m metadata.txt -p candidate_marker.txt -a external_metadata.txt -x external_profile.txt -g Group -e exposure -c classifier -r hyperparamter.txt -s 0 -o TEST
+$ python 15_Test.py -W /workplace/ -m metadata.txt -p candidate_marker.txt -a external_metadata.txt -x external_profile.txt -g Group -e exposure -c classifier -r best_param.txt -s 0 -o TEST
 ```
 ```
 -a input external metadata file for the test dataset
@@ -240,7 +240,8 @@ $ python 15_Test.py -W /workplace/ -m metadata.txt -p candidate_marker.txt -a ex
 metadata.txt: the clinical metadata of the training dataset.  
 candidate_marker.txt: the optimal panel of candidate markers.  
 external_metadata.txt: the clinical metadata of the external test dataset.  
-external_profile.txt: the relative abundance matrix of the external test dataset.  
+external_profile.txt: the relative abundance matrix of the external test dataset. 
+best_param.txt: the best hyperparameter combination of classification model.  
 - Output files:  
 test_result.txt: the overall performance of model in external test dataset.  
 test_auc.pdf: the visualization of the AUC value in test_result.txt.  
@@ -306,7 +307,7 @@ marker_importance.txt: permutation feature importance of candidate markers via t
 #### 19.	Marker importance plot.   
 This step provides the visualization of Step 18.  
 ```
-$ python 19_Marker_importance_plot.py -W /workplace/ -p feature_importance.txt -o TEST
+$ python 19_Marker_importance_plot.py -W /workplace/ -p marker_importance.txt -o TEST
 ```
 ```
 -p input file for plot (output file of Step 18)
