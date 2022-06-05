@@ -3,6 +3,7 @@ xMarkerFinder is a four-stage workflow for microbiome research including cross-c
 
 ## Table of Contents
 * [User Tutorial](#user-tutorial)
+  * [Environment setup](#environment-setup)
   * [Stage 1 Data preparation](#stage-1-data-preparation)
   * [Stage 2 Model construction](#stage-2-model-construction)
   * [Stage 3 Model validation](#stage-3-model-validation)
@@ -14,6 +15,8 @@ xMarkerFinder is a four-stage workflow for microbiome research including cross-c
 
 
 ## User Tutorial
+### Environment setup
+
 ### Stage 1 Data preparation  
 #### 1. Data normalization. 
 Convert microbial counts to relative abundance profiles of all datasets involved.  
