@@ -16,6 +16,31 @@ xMarkerFinder is a four-stage workflow for microbiome research including cross-c
 
 ## User Tutorial
 ### Environment setup
+- R v.3.6.1 or newer (https://www.r-project.org)
+- Python3 v3.7 or newer (https://www.python.org)
+- HAllA (https://huttenhower.sph.harvard.edu/halla)
+- FastSpar (https://github.com/scwatts/FastSpar)
+- Gephi (https://gephi.org)
+#### R packages
+- BiocManager (https://cran.r-project.org/web/packages/BiocManager) to ensure the installation of the following packages and their dependencies.
+- MMUPHin (https://huttenhower.sph.harvard.edu/mmuphin)
+- dplyr (https://cran.r-project.org/web/packages/dplyr)
+- vegan (https://cran.r-project.org/web/packages/vegan/)
+- XICOR (https://cran.r-project.org/web/packages/XICOR/)
+- eva (https://cran.r-project.org/web/packages/eva/)
+- labdsv (https://cran.r-project.org/web/packages/labdsv/)
+- Boruta (https://cran.r-project.org/web/packages/Boruta/, optional)
+#### python packages
+- pandas (https://pandas.pydata.org)
+- NumPy (https://numpy.org/)
+- scikit-learn (https://scikit-learn.org)
+- bioinfokit (https://github.com/reneshbedre/bioinfokit)
+- Bayesian Optimization (https://github.com/fmfn/BayesianOptimization)
+- Matplotlib (https://matplotlib.org/)
+- seaborn (https://seaborn.pydata.org/)
+#### Docker image
+Above software list provides the minimal requirements for the complete execution of xMarkerFinder locally. Alternatively, we provide a ready-to-use Docker image, enabling users to skip the software installation and environment setup (https://hub.docker.com/r/tjcadd2022/xmarkerfinder).
+
 
 ### Stage 1 Data preparation  
 #### 1. Data normalization. 
@@ -32,11 +57,11 @@ Users should specify these parameters or enter the default values, subsequent re
 - Input files:  
 abundance.txt: merged microbial count profile of all datasets.  
 - Output files:  
-relative_abundance.txt: normalized relative abundance profile of input dataset. Relative abundance profiles are used as input files for all subsequent analyses, except for Steps 20-21, which requires raw count file.  
+relative_abundance.txt: normalized relative abundance profile of input dataset. Relative abundance profiles are used as input files for all subsequent analyses, except for Step 11, which requires raw count file.  
 #### 2.	Data filtering. 
 Filter microbial signatures with low occurrence rates across cohorts.  
 ```
-$ Rscript 2_Filtering.R -W /workplace/ -m metadata.txt -p relative_abundance.txt -b Cohort -t 2 -o TEST  
+$ Rscript 2_Filtering.R -W /workplace/ -m train_metadata.txt -p relative_abundance.txt -b Cohort -t 2 -o TEST  
 ```
 ```
 -m the input metadata file  
@@ -46,14 +71,14 @@ $ Rscript 2_Filtering.R -W /workplace/ -m metadata.txt -p relative_abundance.txt
 -O prefix of output files  
 ```
 - Input files:  
-metadata.txt: the clinical metadata of the training dataset.  
+train_metadata.txt: the clinical metadata of the training dataset.  
 relative_abundance.txt: normalized relative abundance profile of the training dataset.  
 - Output files:  
 filtered_abundance.txt: filtered relative abundance profile of the training dataset, used as the input file for following steps.  
 #### 3.	Confounder analysis.   
 PERMANOVA test based on Bray-Curtis dissimilarity is performed to assess the correlation between metadata and microbial profiles and returns the coefficient of determination (R2) value and P value of every metadata index. Whichever index that contributes the most is considered as the major confounder and used later in Step 4. PCoA plot with Bray-Curtis dissimilarity is provided.  
 ```
-$ Rscript 3_Confounder_analysis.R -W /workplace/ -m metadata.txt -p filtered_abundance.txt -g Group -o TEST  
+$ Rscript 3_Confounder_analysis.R -W /workplace/ -m train_metadata.txt -p filtered_abundance.txt -g Group -o TEST  
 ```
 ```
 -m input metadata file  
@@ -61,14 +86,15 @@ $ Rscript 3_Confounder_analysis.R -W /workplace/ -m metadata.txt -p filtered_abu
 -g the column name of experimental interest(group) in metadata (default: Group)  
 ```
 - Input files:  
-metadata.txt: the clinical metadata of the training dataset.  
+train_metadata.txt: the clinical metadata of the training dataset.  
 filtered_abundance.txt: filtered relative abundance profile after preprocessing.  
 - Output files:  
 metadata_microbiota.txt: the confounding effects caused by clinical information, used to determine the major batch and covariates.  
+pcoa_plot.pdf: the PCoA plot with Bray-Curtis dissimilarity between groups.  
 #### 4.	Differential analysis.   
 Based on the major confounder and covariates found in Step 3, cross-cohort differential signature analysis is conducted.
 ```
-$ Rscript 4_Differential_analysis.R -W /workplace/ -m metadata.txt -p filtered_abundance.txt -g Group -b Cohort -c covariates.txt -t 0.05 -o TEST
+$ Rscript 4_Differential_analysis.R -W /workplace/ -m train_metadata.txt -p filtered_abundance.txt -g Group -b Cohort -c covariates.txt -t 0.05 -o TEST
 ```
 ```
 -g the column name of experimental interest(group) in metadata (default: Group)  
@@ -77,7 +103,7 @@ $ Rscript 4_Differential_analysis.R -W /workplace/ -m metadata.txt -p filtered_a
 -t the threshold of P value for plotting (default: 0.05)  
 ```
 - Input files:  
-metadata.txt: the clinical metadata of the training dataset.  
+train_metadata.txt: the clinical metadata of the training dataset.  
 filtered_abundance.txt: filtered relative abundance profile after preprocessing.  
 covariates.txt: covariates identified in Step 3 (newly generated tab-delimited file where each row is a covariate, example file is provided).  
 - Output files:  
@@ -89,7 +115,7 @@ differential_volcano.pdf: the volcano plot of input differential significance fi
 #### 5.	Classifier selection.   
 This step provides optional classifier selection for subsequent steps where the performances of every ML algorithm are generally assessed using all differential signatures. The output file contains the cross-validation AUC, specificity, sensitivity, accuracy, precision and F1 score of all classification models built with these various algorithms. Users should specify the selected classifier in all following steps.
 ```
-$ python 5_Classifier_selection.py -W /workplace/ -m metadata.txt -p differential_signature.txt -g Group -e exposure -s 0 -o TEST
+$ python 5_Classifier_selection.py -W /workplace/ -m train_metadata.txt -p differential_signature.txt -g Group -e exposure -s 0 -o TEST
 ```
 ```
 -p input differential signature file (output file of Step 4)
@@ -98,15 +124,15 @@ $ python 5_Classifier_selection.py -W /workplace/ -m metadata.txt -p differentia
 -s random seed (default:0)
 ```
 - Input files:  
-metadata.txt: the clinical metadata of the training dataset.  
+train_metadata.txt: the clinical metadata of the training dataset.  
 differential_signature.txt: significantly differential signatures between groups.  
 - Output files:  
 classifier_selection.txt: the overall cross-validation performance of all classifiers using differential signatures, used to determine the most suitable classifier.  
 #### 6.	Feature selection.
 ##### 6a. Feature effectiveness evaluation  
-The first step of Triple-E feature selection procedure evaluates the predictive capability of every feature via constructing individual classification models respectively. Users should specify an ML algorithm here and in every future step as the overall classifier for the whole protocol from the following options: Logisticl1, Logisticl2, DecisionTree, RandomForest, GradientBoost, KNeighbors and SVC. Features with cross-validation AUC above the threshold (default:0.5) are defined as effective features and are returned in the output file.  
+The first step of Triple-E feature selection procedure evaluates the predictive capability of every feature via constructing individual classification models respectively. Users should specify an ML algorithm here and in every future step as the overall classifier for the whole protocol from the following options: LRl1, LRl2, DT, RF, GB, KNN and SVC. Features with cross-validation AUC above the threshold (default:0.5) are defined as effective features and are returned in the output file.  
 ```
-$ python 6a_Feature_effectiveness_evaluation.py -W /workplace/ -m metadata.txt -p differential_signature.txt -g Group -e exposure -b Cohort -c classifier -s 0 -t 0.5 -o TEST
+$ python 6a_Feature_effectiveness_evaluation.py -W /workplace/ -m train_metadata.txt -p differential_signature.txt -g Group -e exposure -b Cohort -c classifier -s 0 -t 0.5 -o TEST
 ```
 ```
 -p input differential signature file (output file of Step 4)
@@ -115,7 +141,7 @@ $ python 6a_Feature_effectiveness_evaluation.py -W /workplace/ -m metadata.txt -
 -t AUC threshold for defining if a feature is capable of prediction (default:0.5)
 ```
 - Input files:  
-metadata.txt: the clinical metadata of the training dataset.  
+train_metadata.txt: the clinical metadata of the training dataset.  
 differential_signature.txt: significantly differential signatures between groups.  
 - Output files:  
 feature_auc.txt: cross-validation AUC values of individual features.  
@@ -126,7 +152,7 @@ The second step of feature selection aims to exclude collinear issue caused by h
 $ python 6b_Collinear_feature_exclusion.py -W /workplace/ -p effective_feature.txt -t 0.7 -o TEST
 ```
 ```
--p input effective feature file (output file of Step 7)
+-p input effective feature file (output file of Step 6a)
 -t correlation threshold for collinear feature exclusion (default:0.7)
 ```
 - Input files:  
@@ -138,13 +164,13 @@ uncorrelated_effective_feature.txt: features derived from input effective featur
 ##### 6c.	Recursive feature elimination.   
 The last step of feature selection recursively eliminates the weakest feature per loop to sort out the minimal panel of candidate markers.  
 ```
-$ python 6c_Recursive_feature_elimination.py -W /workplace/ -m metadata.txt -p uncorrelated_effective_feature.txt -g Group -e exposure -c classifier -s 0 -o TEST
+$ python 6c_Recursive_feature_elimination.py -W /workplace/ -m train_metadata.txt -p uncorrelated_effective_feature.txt -g Group -e exposure -c classifier -s 0 -o TEST
 ```
 ```
--p input uncorrelated-effective feature file (output file of Step 8)
+-p input uncorrelated-effective feature file (output file of Step 6b)
 ```
 - Input files:  
-metadata.txt: the clinical metadata of the training dataset.  
+train_metadata.txt: the clinical metadata of the training dataset.  
 uncorrelated_effective_feature.txt: independent features derived from effective features.  
 - Output files:  
 candidate_marker.txt: identified optimal panel of candidate markers, used as model input for all subsequent steps.  
@@ -154,24 +180,24 @@ Besides Triple-E feature selection procedure, we provide an alternative method, 
 $ Rscript alt_6_Boruta_feature_selection.R -W /workplace/ -m metadata.txt -p differential_signature.txt -g Group -s 0 -o TEST
 ```
 ```
--p input differential signature profile (output file of Step 4) or uncorrelated-effective feature file (output file of Step 8)
+-p input differential signature profile (output file of Step 4) or uncorrelated-effective feature file (output file of Step 6b)
 ```
 - Input files:  
 metadata.txt: the clinical metadata of the training dataset.  
-differential_signature.txt: differential signatures used for feature selection (could also be uncorrelated-effective features from Step 8).  
+differential_signature.txt: differential signatures used for feature selection (could also be uncorrelated-effective features from Step 6b).  
 - Output files:  
 boruta_feature_imp.txt: confirmed feature importances via Boruta algorithm.  
 boruta_selected_feature.txt: selected feature profile, used as input candidate markers for subsequent steps.  
 #### 7.	Hyperparameter tuning.   
 Based on the selected classifier and candidate markers, the hyperparameters of the classification model are adjusted via bayesian optimization method based on cross-validation AUC. The output files contain the tuned hyperparameters and the multiple performance metric values of the constructed best-performing model.  
 ```
-$ python 7_Model_construction.py -W /workplace/ -m metadata.txt -p candidate_marker.txt -g Group -e exposure -c classifier -s 0 -o TEST
+$ python 7_Model_construction.py -W /workplace/ -m train_metadata.txt -p candidate_marker.txt -g Group -e exposure -c classifier -s 0 -o TEST
 ```
 ```
--p input candidate marker profile (output file of Step 9 or Step 10)
+-p input candidate marker profile (output file of Step 6)
 ```
 - Input files:  
-metadata.txt: the clinical metadata of the training dataset.  
+train_metadata.txt: the clinical metadata of the training dataset.  
 candidate_marker.txt: the optimal panel of candidate markers (or boruta_selected_feature.txt for all subsequent steps).  
 - Output files:  
 best_param.txt: the best hyperparameter combination of classification model.  
@@ -190,13 +216,13 @@ $ python 8_Validation.py -W /workplace/ -m metadata.txt -p candidate_marker.txt 
 metadata.txt: the clinical metadata of the training dataset.  
 candidate_marker.txt: the optimal panel of candidate markers.  
 - Output files:  
-validation.txt: the overall performance of markers in internal validations. 
-validation.pdf: the visualization of input file.  
+validation_metric.txt: the overall performance of markers in internal validations. 
+validation_metric.pdf: the visualization of input file.  
 #### 9.	External validation.
 ##### 9a. Independent test.
 As the best-performing candidate markers and classification model are established, the test dataset is used to externally validate their generalizability. The input external metadata and microbial relative profiles need to be in the same format as initial input files for the training dataset. This step returns the overall performance of the model and its AUC plot.  
 ```
-$ python 9a_Test.py -W /workplace/ -m metadata.txt -p candidate_marker.txt -a external_metadata.txt -x external_profile.txt -g Group -e exposure -c classifier -r hyperparamter.txt -s 0 -o TEST
+$ python 9a_Test.py -W /workplace/ -m train_metadata.txt -p candidate_marker.txt -a external_metadata.txt -x external_profile.txt -g Group -e exposure -c classifier -r hyperparamter.txt -s 0 -o TEST
 ```
 ```
 -a input external metadata file for the test dataset
@@ -204,10 +230,10 @@ $ python 9a_Test.py -W /workplace/ -m metadata.txt -p candidate_marker.txt -a ex
 -r input optimal hyperparameter file (output file of Step 11)
 ```
 - Input files:  
-metadata.txt: the clinical metadata of the training dataset.  
+train_metadata.txt: the clinical metadata of the training dataset.  
 candidate_marker.txt: the optimal panel of candidate markers.  
-external_metadata.txt: the clinical metadata of the external test dataset.  
-external_profile.txt: the relative abundance matrix of the external test dataset.  
+test_metadata.txt: the clinical metadata of the external test dataset.  
+test_profile.txt: the relative abundance matrix of the external test dataset.  
 - Output files:  
 test_result.txt: the overall performance of model in external test dataset.  
 test_auc.pdf: the visualization of the AUC value in test_result.txt.  
@@ -223,7 +249,6 @@ $ python 9b_Specificity.py -W /workplace/ -p candidate_marker.txt -a other_metad
 -b the column name of cohort(in example file: Cohort)
 ```
 - Input files:  
-metadata.txt: the clinical metadata of the training dataset.  
 candidate_marker.txt: the optimal panel of candidate markers.  
 other_metadata.txt: the clinical metadata of samples for other diseases.  
 other_profile.txt: the relative abundance matrix of other diseases.  
@@ -233,7 +258,7 @@ specificity_auc.pdf: the visualization of the specificity_result.txt.
 ##### 9b*.	Alternative specificity assessment.   
 Random samples of case and control class of other diseases are added into the classification model, respectively, both labelled as “control”, the variations of corresponding AUCs of which are calculated used for visualization.   
 ```
-$ python alt_9b_Specificity_add.py -W /workplace/ -m metadata.txt -p candidate_marker.txt -q external_metadata.txt -l external_profile.txt -a other_metadata.txt -x other_profile.txt -g Group -e exposure -b Cohort -c classifier -r hyperparamter.txt -n 5 -s 0 -o TEST
+$ python alt_9b_Specificity_add.py -W /workplace/ -m train_metadata.txt -p candidate_marker.txt -q test_metadata.txt -l test_profile.txt -a other_metadata.txt -x other_profile.txt -g Group -e exposure -b Cohort -c classifier -r hyperparamter.txt -n 5 -s 0 -o TEST
 ```
 ```
 -q input external metadata file for the test dataset
@@ -245,10 +270,10 @@ $ python alt_9b_Specificity_add.py -W /workplace/ -m metadata.txt -p candidate_m
 -n the number of samples to add into the model each time 
 ```
 - Input files:  
-metadata.txt: the clinical metadata of the training dataset.  
+train_metadata.txt: the clinical metadata of the training dataset.  
 candidate_marker.txt: the optimal panel of candidate markers.  
-external_metadata.txt: the clinical metadata of the external test dataset.  
-external_profile.txt: the relative abundance matrix of the external test dataset.  
+test_metadata.txt: the clinical metadata of the external test dataset.  
+test_profile.txt: the relative abundance matrix of the external test dataset.  
 other_metadata.txt: the clinical metadata of samples for other diseases.  
 other_profile.txt: the relative abundance matrix of other diseases.  
 - Output files:  
@@ -258,21 +283,21 @@ specificity_add_auc.pdf: the visualization of the specificity_result.txt.
 #### 10.	Marker importance.
 Permutation feature importance is employed here to evaluate markers’ contributions in the best-performing classification model.  
 ```
-$ python 10_Marker_importance.py -W /workplace/ -m metadata.txt -p candidate_marker.txt -g Group -e exposure -c classifier -r best_param.txt -s 0 -o TEST
+$ python 10_Marker_importance.py -W /workplace/ -m train_metadata.txt -p candidate_marker.txt -g Group -e exposure -c classifier -r best_param.txt -s 0 -o TEST
 ```
 ```
--p input candidate markers (output file of Step 9 or Step 10)
--r input optimal hyperparameter file (output file of Step 11)
+-p input candidate markers (output file of Step 6)
+-r input optimal hyperparameter file (output file of Step 7)
 ```
 - Input files:  
-metadata.txt: the clinical metadata of the training dataset.  
+train_metadata.txt: the clinical metadata of the training dataset.  
 candidate_marker.txt: the optimal panel of candidate markers.  
 best_param.txt: the best hyperparameter combination of classification model.  
 - Output files:  
 marker_importance.txt: permutation feature importance of candidate markers via ten permutations.  
 marker_importance.pdf: the visualization of feature importance file.   
 #### 11.	Microbial taxon correlation.   
-Inter-microbiota correlation is calculated using FastSpar with 50 iterations and the output files contain the correlation and P value between every microbiota pair.   
+Inter-microbiota correlation is calculated using FastSpar with 50 iterations and the output files contain the correlation and p value between each microbiota pair.   
 ##### 11a. Convert.
 As the input file for Step 20 needs to be microbial count profile in .tsv format where each row describes a microbial taxon and each column represents a sample (could be converted profiles of all features, differential signatures, or candidate markers according to users’ need, and null values needed to be set as 0) and header needs to start with “#OTU ID”, an additional file conversion script is provided.  
 ```
@@ -284,7 +309,7 @@ $ python 11a_Convert.py -W /workplace/ -p abundance.txt -s selected_feature.txt 
 ```
 - Input files:  
 abundance.txt: microbial raw count profile before normalization.  
-selected_feature.txt: selected features for calculating microbial correlation (output file of Step 4, 9, or 10)  
+selected_feature.txt: selected features for calculating microbial correlation (output file of Step 4 or 6)  
 - Output files:  
 convert.tsv: the converted file appropriate for calculating microbial taxon correlation.  
 ##### 11b. Microbial taxon correlation calculation.
@@ -296,31 +321,33 @@ $ ./11b_Microbial_taxon_correlation.sh -W /workplace/ –i feature_abundance.tsv
 -t threads of available computational source  
 ```
 - Input files:  
-microbial_taxon.tsv: microbial count profile in .tsv format where each row describes a microbial taxon and each column represents a sample and the header needs to start with “#OTU ID”. Example input file is provided and users are recommended to user the conversion script above to convert files into appropriate formats.  
+microbial_taxon.tsv: microbial count profile in .tsv format where each row describes a microbial taxon and each column represents a sample and the header needs to start with “#OTU ID”. Example input file is provided and users are recommended to user Step 11a to convert files into appropriate formats.  
 -t the threads of available computational source when running  
 - Output files:  
 median_correlation.tsv: the correlation coefficients between every input taxon pair.  
 pvalues.tsv: the statistical significance of median_correlation.tsv.  
 ##### 11c. Microbial taxon correlation plot. 
 The visualization of Step 20 is performed using Gephi.  
-(i) Preprocess of the results of Step 20 to ensure that Step 21 only draws significant correlations (pvalues<0.05) with absolute correlation coefficients above 0.5 (default).
+(i) Preprocess of the results of Step 20 to ensure that Step 11 only draws significant correlations (pvalues<0.05) with absolute correlation coefficients above 0.5 (default).
 ```
 $ python 11c_Microbial_taxon_correlation_plot.py -W /workplace/ –c median_correlation.tsv -p pvalues.tsv -t 0.5 -o TEST 
 ```
 ```
--c input correlation profile (output file of Step 20)
--p input pvalue profile (output file of Step 20)
+-c input correlation profile (output file of Step 11b)
+-p input pvalue profile (output file of Step 11b)
 -t input correlation threshold (default: 0.5)
 ```
 - Input files:
-median_correlation.tsv: the correlation coefficients profile (output file of Step 20).
-pvalues.tsv: the statistical significance of median_correlation.tsv (output file of Step 20).
+median_correlation.tsv: the correlation coefficients profile (output file of Step 11b).
+pvalues.tsv: the statistical significance of median_correlation.tsv (output file of Step 11b).
 - Output files:
 correlation.csv: adjusted correlation profile for Gephi input, only significant correlations reserved.  
-(ii)	Open Gephi and click “File” – “Import spreadsheet”.
-<img width="415" alt="image" src="https://user-images.githubusercontent.com/54845977/171319514-fe15e6d3-6d44-43c5-9c50-3e6c5d52a5e5.png">  
-(iii) Choose the adjusted correlation profile.  
-<img width="415" alt="image" src="https://user-images.githubusercontent.com/54845977/171319788-af5776f9-7b91-4dc8-a55f-d6ccc404a2c4.png">  
+(ii)	Open Gephi and click "File" – "Import spreadsheet", and then choose the adjusted correlation profile.
+<img width="415" alt="image" src="https://user-images.githubusercontent.com/54845977/172099513-be88d65c-2477-4ccf-80ac-c077bbd0e10d.png">
+
+(iii) Import the correlation profile.  
+<img width="402" alt="image" src="https://user-images.githubusercontent.com/54845977/172099586-d3cb55bc-5605-4d3d-9c2a-219aab217114.png">
+
 (iv)  Choose a preferable layout type to form the basic network and press the “stop” button when the network becomes stable (Fruchterman Reingold style is recommended).  
 <img width="415" alt="image" src="https://user-images.githubusercontent.com/54845977/171319813-0fed579e-6c7d-4581-bf7e-174aa8d391e1.png">   
 (v)  For further optimization of the network, appearances of nodes and edges should be adjusted according to users’ need, as well as the labels of nodes. <img width="415" alt="image" src="https://user-images.githubusercontent.com/54845977/171319835-a572168e-fad4-47d0-a03b-16b528c99d54.png">    
@@ -328,7 +355,7 @@ correlation.csv: adjusted correlation profile for Gephi input, only significant 
 #### 12.	Multi-omics correlation. 
 If users have multi-omics or multidimensional microbial profiles of the same dataset, the correlation between different omics or dimensions are calculated via HAllA.
 ```
-$ ./22_Multi_omics_correlation.sh -W /workplace/ -i microbial_abundance_1.txt -d microbial_abundance_2.txt -o TEST
+$ ./12_Multi_omics_correlation.sh -W /workplace/ -i microbial_abundance_1.txt -d microbial_abundance_2.txt -o TEST
 ```
 ```
 -i input microbial abundance file 1
