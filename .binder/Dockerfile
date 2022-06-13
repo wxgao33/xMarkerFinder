@@ -2,9 +2,9 @@ FROM biobakery/mmuphin
 
 MAINTAINER Wenxing Gao wxgao@tongji.edu.cn
 
-WORKDIR /work
+#WORKDIR /work
 
-COPY requirements.txt /work
+COPY requirements.txt requirements.txt
 
 USER root
 RUN add-apt-repository ppa:deadsnakes/ppa && apt-get update && \
