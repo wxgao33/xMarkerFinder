@@ -1,0 +1,13 @@
+numpy==1.19.5
+pandas==1.1.5
+scikit-learn==0.24.2
+seaborn==0.11.1
+bayesian-optimization==1.2.0
+scipy==1.5.4
+jenkspy==0.1.5
+PyYAML==5.3.1
+rpy2==3.3.5
+statsmodels==0.11.1
+tqdm==4.50.2
+HAllA==0.8.18
+bioinfokit==2.0.6
