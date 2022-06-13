@@ -4,7 +4,7 @@ MAINTAINER Wenxing Gao wxgao@tongji.edu.cn
 
 WORKDIR /work
 
-COPY ./requirements.txt /work/requirements.txt
+COPY ./requirements.txt /work
 
 USER root
 RUN add-apt-repository ppa:deadsnakes/ppa && apt-get update && \
