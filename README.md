@@ -44,6 +44,8 @@ xMarkerFinder is a four-stage workflow for microbiome research including cross-c
 Above software list provides the minimal requirements for the complete execution of xMarkerFinder locally. Alternatively, we provide a ready-to-use Docker image, enabling users to skip the software installation and environment setup (https://hub.docker.com/r/tjcadd2022/xmarkerfinder).  
 ```
 $ docker run -it -v $(pwd):/work tjcadd2022/xmarkerfinder:1.0.14 /bin/bash  
+```
+```
 -it Run containers in an interactive mode, allowing users to execute commands and access files within the docker container.  
 -v Mounts a volume between present working directory in your local machine to the /work directory in the docker container.  
 ```
