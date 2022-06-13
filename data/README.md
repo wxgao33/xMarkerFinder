@@ -1,4 +1,4 @@
-### Example data files are as follows.
+#### Example input files are as follows.
 - metadata.txt: the clinical metadata of the training dataset, including experimental group, cohort, and other metadata indices.  
 - feature_abundance.txt: the microbial abundance profile of the training dataset.  
 - external_metadata.txt: the clinical metadata of the external test dataset.  
@@ -8,4 +8,4 @@
 - covariates.txt: the example input covariates file for Step 4.
 - microbial_taxon.tsv: the example input microbial raw count profile for Step 20.
 
-
+#### Example output files are as follows.
