@@ -4,8 +4,6 @@ MAINTAINER Wenxing Gao wxgao@tongji.edu.cn
 
 #WORKDIR /work
 
-COPY requirements.txt requirements.txt
-
 USER root
 RUN add-apt-repository ppa:deadsnakes/ppa && apt-get update && \
 	apt-get install --yes --no-install-recommends \
@@ -23,9 +21,13 @@ RUN add-apt-repository ppa:deadsnakes/ppa && apt-get update && \
 
 RUN R -q -e "install.packages(c('Boruta','eva','XICOR','labdsv'),repos='https://cran.r-project.org')"
 
+COPY requirements.txt /tmp/
+
 RUN python3.8 -m pip install --upgrade setuptools && \
 	python3.8 -m pip install --upgrade pip && \
 	python3.8 -m pip install --no-cache-dir -r requirements.txt
+	
+COPY . /tmp/
 
 RUN git clone https://github.com/scwatts/fastspar.git && \
 	cd fastspar && ./autogen.sh && ./configure --prefix=/usr/ && \
