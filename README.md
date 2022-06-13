@@ -6,7 +6,7 @@ xMarkerFinder is a four-stage workflow for microbiome research including cross-c
 ## Table of Contents
 * [User Tutorial](#user-tutorial)
   * [Environment setup](#environment-setup)
-  * [Stage 1 Data preparation](#stage-1-data-preparation)
+  * [Stage 1 Differential signature identification](#stage-1-differential-signature-identification)
   * [Stage 2 Model construction](#stage-2-model-construction)
   * [Stage 3 Model validation](#stage-3-model-validation)
   * [Stage 4 Marker interpretation](#stage-4-marker-interpretation)
@@ -41,10 +41,14 @@ xMarkerFinder is a four-stage workflow for microbiome research including cross-c
 - Matplotlib (https://matplotlib.org/)
 - seaborn (https://seaborn.pydata.org/)
 #### Docker image
-Above software list provides the minimal requirements for the complete execution of xMarkerFinder locally. Alternatively, we provide a ready-to-use Docker image, enabling users to skip the software installation and environment setup (https://hub.docker.com/r/tjcadd2022/xmarkerfinder).
+Above software list provides the minimal requirements for the complete execution of xMarkerFinder locally. Alternatively, we provide a ready-to-use Docker image, enabling users to skip the software installation and environment setup (https://hub.docker.com/r/tjcadd2022/xmarkerfinder).  
+```
+$ docker run -it -v $(pwd):/work tjcadd2022/xmarkerfinder:1.0.14 /bin/bash  
+-it Run containers in an interactive mode, allowing users to execute commands and access files within the docker container.  
+-v Mounts a volume between present working directory in your local machine to the /work directory in the docker container.  
+```
 
-
-### Stage 1 Data preparation  
+### Stage 1 Differential signature identification  
 #### 1. Data normalization. 
 Convert microbial counts to relative abundance profiles of all datasets involved.  
 ```
@@ -193,7 +197,7 @@ boruta_selected_feature.txt: selected feature profile, used as input candidate m
 #### 7.	Hyperparameter tuning.   
 Based on the selected classifier and candidate markers, the hyperparameters of the classification model are adjusted via bayesian optimization method based on cross-validation AUC. The output files contain the tuned hyperparameters and the multiple performance metric values of the constructed best-performing model.  
 ```
-$ python 7_Model_construction.py -W /workplace/ -m train_metadata.txt -p candidate_marker.txt -g Group -e exposure -c classifier -s 0 -o TEST
+$ python 7_Hyperparameter_tuning.py -W /workplace/ -m train_metadata.txt -p candidate_marker.txt -g Group -e exposure -c classifier -s 0 -o TEST
 ```
 ```
 -p input candidate marker profile (output file of Step 6)
@@ -343,7 +347,7 @@ $ python 11c_Microbial_taxon_correlation_plot.py -W /workplace/ –c median_corr
 median_correlation.tsv: the correlation coefficients profile (output file of Step 11b).
 pvalues.tsv: the statistical significance of median_correlation.tsv (output file of Step 11b).
 - Output files:
-correlation.csv: adjusted correlation profile for Gephi input, only significant correlations reserved.  
+microbial_correlation.csv: adjusted correlation profile for Gephi input, only significant correlations reserved.  
 (ii)	Open Gephi and click "File" – "Import spreadsheet", and then choose the adjusted correlation profile.
 <img width="415" alt="image" src="https://user-images.githubusercontent.com/54845977/172099513-be88d65c-2477-4ccf-80ac-c077bbd0e10d.png">
 
