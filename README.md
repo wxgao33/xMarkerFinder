@@ -385,7 +385,7 @@ We provide detailed instructions on software installation for users to run the w
 #### 3. Can I access and modify the codes used in xMarkerFinder?  
 Yes. The codes used in xMarkerFinder are deposited in our GitHub repository and can be freely downloaded and modified according to users’ specific needs. However, the modification might cause unprecedented errors and we encourage users to try different parameters first, and then modify the codes. (https://github.com/tjcadd2020/xMarkerFinder)
 #### 4. Can I use only certain steps of xMarkerFinder and skip other parts?  
-Yes. The whole xMarkerFinder workflow contains four stages (23 steps) and every stage/step can be conducted independently and users could skip any one of them according to specific study designs.
+Yes. The whole xMarkerFinder workflow contains four stages (12 steps) and every stage/step can be conducted independently and users could skip any one of them according to specific study designs.
 #### 5. Can I use xMarkerFinder on environmental microbiome researches?  
 Yes. Although xMarkerFinder is developed for human microbiome studies, it is also generalizable to other microbial habitats. 
 #### 6. How long does it take to run xMarkerFinder?  
