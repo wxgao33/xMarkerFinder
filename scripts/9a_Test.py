@@ -38,7 +38,8 @@ data_group = np.array([1 if i== str(args.exposure) else 0 for i in metadata[str(
 ex_metadata = pd.read_table(args.Workplace+args.external_metadata,sep = '\t',index_col = 0)
 ex_data = pd.read_table(args.Workplace+args.external_profile,sep = '\t',index_col=0)
 ex_data_group = np.array([1 if i== str(args.exposure) else 0 for i in ex_metadata[str(args.group)]])
-ex_data = ex_data.loc[:,opt_biomarker.columns]
+ex_data = pd.DataFrame(ex_data,columns=opt_biomarker.columns)
+ex_data = ex_data.fillna(0)
 
 RANDOM_SEED = int(args.seed)
 opt_clf = args.classifier
