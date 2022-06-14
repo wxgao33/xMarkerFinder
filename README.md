@@ -329,12 +329,12 @@ $ ./11b_Microbial_network.sh -W /workplace/ –i feature_abundance.tsv -o TEST -
 -t threads of available computational source  
 ```
 - Input files:  
-convert.tsv: microbial count profile in .tsv format where each row describes a microbial taxon and each column represents a sample and the header needs to start with “#OTU ID”. Example input file is provided and users are recommended to user Step 11a to convert files into appropriate formats.  
+convert.tsv: microbial count profile in .tsv format where each row describes a microbial signature and each column represents a sample and the header needs to start with “#OTU ID”. Example input file is provided and users are recommended to user Step 11a to convert files into appropriate formats.  
 -t the threads of available computational source when running  
 - Output files:  
 median_correlation.tsv: the correlation coefficients between every input signature pair.  
 pvalues.tsv: the statistical significance of median_correlation.tsv.  
-##### 11c. Microbial taxon correlation plot. 
+##### 11c. Microbial co-occurrence network plot. 
 The visualization of Step 11 is performed using Gephi.  
 (i) Preprocess of the results of Step 11b to ensure that Step 11c only draws significant correlations (pvalues<0.05) with absolute correlation coefficients above 0.5 (default).
 ```
@@ -349,12 +349,12 @@ $ python 11c_Microbial_network_plot.py -W /workplace/ –c median_correlation.ts
 median_correlation.tsv: the correlation coefficients profile (output file of Step 11b).
 pvalues.tsv: the statistical significance of median_correlation.tsv (output file of Step 11b).
 - Output files:
-microbial_network.csv: adjusted correlation profile for Gephi input, only significant correlations reserved.  
-(ii)	Open Gephi and click "File" – "Import spreadsheet", and then choose the adjusted correlation profile.
-<img width="415" alt="image" src="https://user-images.githubusercontent.com/54845977/172099513-be88d65c-2477-4ccf-80ac-c077bbd0e10d.png">
+microbial_network.csv: adjusted network profile for Gephi input, only significant correlations reserved.  
+(ii)	Open Gephi and click "File" – "Import spreadsheet", and then choose the adjusted network profile.  
+<img width="415" alt="image" src="https://user-images.githubusercontent.com/54845977/173520689-3f4a34e5-e2a6-4ba8-b2ae-b8160ebb0d1d.png">
 
-(iii) Import the correlation profile.  
-<img width="402" alt="image" src="https://user-images.githubusercontent.com/54845977/172099586-d3cb55bc-5605-4d3d-9c2a-219aab217114.png">
+(iii) Import the network file.  
+<img width="383" alt="image" src="https://user-images.githubusercontent.com/54845977/173520895-9c15d969-13eb-4b07-9c9c-fa83b6ae00e9.png">
 
 (iv)  Choose a preferable layout type to form the basic network and press the “stop” button when the network becomes stable (Fruchterman Reingold style is recommended).  
 <img width="415" alt="image" src="https://user-images.githubusercontent.com/54845977/171319813-0fed579e-6c7d-4581-bf7e-174aa8d391e1.png">   
