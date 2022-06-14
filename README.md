@@ -304,10 +304,10 @@ best_param.txt: the best hyperparameter combination of classification model.
 - Output files:  
 marker_importance.txt: permutation feature importance of candidate markers via ten permutations.  
 marker_importance.pdf: the visualization of feature importance file.   
-#### 11.	Microbial taxon correlation.   
+#### 11.	Microbial co-occurrence network.   
 Inter-microbiota correlation is calculated using FastSpar with 50 iterations and the output files contain the correlation and p value between each microbiota pair.   
 ##### 11a. Convert.
-As the input file for Step 20 needs to be microbial count profile in .tsv format where each row describes a microbial taxon and each column represents a sample (could be converted profiles of all features, differential signatures, or candidate markers according to users’ need, and null values needed to be set as 0) and header needs to start with “#OTU ID”, an additional file conversion script is provided.  
+As the input file for Step 11b needs to be microbial count profile in .tsv format where each row describes a microbial signature and each column represents a sample (could be converted profiles of all features, differential signatures, or candidate markers according to users’ need, and null values needed to be set as 0) and header needs to start with “#OTU ID”, an additional file conversion script is provided.  
 ```
 $ python 11a_Convert.py -W /workplace/ -p abundance.txt -s selected_feature.txt -o TEST
 ```
@@ -317,31 +317,31 @@ $ python 11a_Convert.py -W /workplace/ -p abundance.txt -s selected_feature.txt 
 ```
 - Input files:  
 abundance.txt: microbial raw count profile before normalization.  
-selected_feature.txt: selected features for calculating microbial correlation (output file of Step 4 or 6)  
+selected_feature.txt: selected features for calculating microbial co-occurrence network (output file of Step 4 or 6)  
 - Output files:  
-convert.tsv: the converted file appropriate for calculating microbial taxon correlation.  
-##### 11b. Microbial taxon correlation calculation.
+convert.tsv: the converted file appropriate for constructing microbial co-occurrence network.  
+##### 11b. Microbial co-occurrence network.
 ```
-$ ./11b_Microbial_taxon_correlation.sh -W /workplace/ –i feature_abundance.tsv -o TEST -t 4
+$ ./11b_Microbial_network.sh -W /workplace/ –i feature_abundance.tsv -o TEST -t 4
 ```
 ```
 -i input feature abundance file  
 -t threads of available computational source  
 ```
 - Input files:  
-microbial_taxon.tsv: microbial count profile in .tsv format where each row describes a microbial taxon and each column represents a sample and the header needs to start with “#OTU ID”. Example input file is provided and users are recommended to user Step 11a to convert files into appropriate formats.  
+convert.tsv: microbial count profile in .tsv format where each row describes a microbial taxon and each column represents a sample and the header needs to start with “#OTU ID”. Example input file is provided and users are recommended to user Step 11a to convert files into appropriate formats.  
 -t the threads of available computational source when running  
 - Output files:  
-median_correlation.tsv: the correlation coefficients between every input taxon pair.  
+median_correlation.tsv: the correlation coefficients between every input signature pair.  
 pvalues.tsv: the statistical significance of median_correlation.tsv.  
 ##### 11c. Microbial taxon correlation plot. 
-The visualization of Step 20 is performed using Gephi.  
-(i) Preprocess of the results of Step 20 to ensure that Step 11 only draws significant correlations (pvalues<0.05) with absolute correlation coefficients above 0.5 (default).
+The visualization of Step 11 is performed using Gephi.  
+(i) Preprocess of the results of Step 11b to ensure that Step 11c only draws significant correlations (pvalues<0.05) with absolute correlation coefficients above 0.5 (default).
 ```
-$ python 11c_Microbial_taxon_correlation_plot.py -W /workplace/ –c median_correlation.tsv -p pvalues.tsv -t 0.5 -o TEST 
+$ python 11c_Microbial_network_plot.py -W /workplace/ –c median_correlation.tsv -p pvalues.tsv -t 0.5 -o TEST 
 ```
 ```
--c input correlation profile (output file of Step 11b)
+-c input network profile (output file of Step 11b)
 -p input pvalue profile (output file of Step 11b)
 -t input correlation threshold (default: 0.5)
 ```
@@ -349,7 +349,7 @@ $ python 11c_Microbial_taxon_correlation_plot.py -W /workplace/ –c median_corr
 median_correlation.tsv: the correlation coefficients profile (output file of Step 11b).
 pvalues.tsv: the statistical significance of median_correlation.tsv (output file of Step 11b).
 - Output files:
-microbial_correlation.csv: adjusted correlation profile for Gephi input, only significant correlations reserved.  
+microbial_network.csv: adjusted correlation profile for Gephi input, only significant correlations reserved.  
 (ii)	Open Gephi and click "File" – "Import spreadsheet", and then choose the adjusted correlation profile.
 <img width="415" alt="image" src="https://user-images.githubusercontent.com/54845977/172099513-be88d65c-2477-4ccf-80ac-c077bbd0e10d.png">
 
