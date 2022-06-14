@@ -1,5 +1,5 @@
 # Identification and validation of microbial marker from cross-cohort datasets using xMarkerFinder
-xMarkerFinder is a four-stage workflow for microbiome research including cross-cohort differential signature analysis, model construction, model validation, and marker identification. Detailed [scripts](./scripts), [example files](./data), and a ready-to-use [docker image](https://hub.docker.com/repository/docker/tjcadd2022/xmarkerfinder) are provided.  
+xMarkerFinder is a four-stage workflow for microbiome research including differential signature identification, model construction, model validation, and marker interpretation. Detailed [scripts](./scripts), [example files](./data), and a ready-to-use [docker image](https://hub.docker.com/repository/docker/tjcadd2022/xmarkerfinder) are provided.  
 
 ![ ](https://img.shields.io/badge/python-3.7-blue) ![GitHub top language](https://img.shields.io/github/languages/top/tjcadd2020/xMarkerFinder)  ![GitHub](https://img.shields.io/github/license/tjcadd2020/xMarkerFinder) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/tjcadd2020/xMarkerFinder) [![GitHub version](https://badge.fury.io/gh/tjcadd2020%2FxMarkerFinder.svg)](https://badge.fury.io/gh/tjcadd2020%2FxMarkerFinder) ![GitHub issues](https://img.shields.io/github/issues/tjcadd2020/xMarkerFinder) [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/tjcadd2020/xMarkerFinder/HEAD) [![](https://img.shields.io/badge/website-CADD-lightgrey)](https://cadd.tongji.edu.cn/)
 
@@ -41,7 +41,7 @@ xMarkerFinder is a four-stage workflow for microbiome research including cross-c
 - Matplotlib (https://matplotlib.org/)
 - seaborn (https://seaborn.pydata.org/)
 #### Docker image
-Above software list provides the minimal requirements for the complete execution of xMarkerFinder locally. Alternatively, we provide a ready-to-use Docker image, enabling users to skip the software installation and environment setup (https://hub.docker.com/r/tjcadd2022/xmarkerfinder).  
+Above software list provides the minimal requirements for the complete execution of xMarkerFinder locally. Alternatively, we provide a ready-to-use Docker image, enabling users to skip the software installation and environment setup (https://hub.docker.com/r/tjcadd2022/xmarkerfinder). Additionally, an interactive JupyterHub server (https://mybinder.org/v2/gh/tjcadd2020/xMarkerFinder/HEAD) is also available.
 ```
 $ docker run -it -v $(pwd):/work tjcadd2022/xmarkerfinder:1.0.14 /bin/bash  
 ```
@@ -389,7 +389,7 @@ Yes. The whole xMarkerFinder workflow contains four stages (23 steps) and every 
 #### 5. Can I use xMarkerFinder on environmental microbiome researches?  
 Yes. Although xMarkerFinder is developed for human microbiome studies, it is also generalizable to other microbial habitats. 
 #### 6. How long does it take to run xMarkerFinder?  
-The time needed for the whole workflow depends on the dataset size, selected algorithm, and computational resources available. The following time estimates are based on execution of our protocol on provided example datasets with random forest (Timing 1), decision tree (Timing 2), k-nearest neighbors (Timing 3), and support vector classifier (Timing 4) using the xMarkerFinder docker image on a MacBook Pro (2.4-GHz quad-core eighth-generation Intel Core i5 processor, 16-GB 2133-MHz LPDDR3 memory).  
+The time needed for the whole workflow depends on the dataset size, selected algorithm, and computational resources available. The following time estimates are based on execution of our protocol on provided example datasets with all classifiers (Logistic Regression (LR, L1 and L2 regularization), Decision Tree (DT) classifier, Random Forest(RF) classifier, Gradient Boosting (GB) classifier, K-nearest Neighbors (KNN) classifier, and Support Vector classifier (SVC) with the Radial Basis Function kernel) using the xMarkerFinder docker image on a MacBook Pro (2.4-GHz quad-core eighth-generation Intel Core i5 processor, 16-GB 2133-MHz LPDDR3 memory).  
 |     Stage                    |     Step    |     RF             |     DT            |     KNN           |     SVC            |
 |------------------------------|-------------|--------------------|-------------------|-------------------|--------------------|
 |     Data preparation         |     1       |     0m20.600s      |     0m20.600s     |     0m20.600s     |     0m20.600s      |
