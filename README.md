@@ -390,25 +390,30 @@ Yes. The whole xMarkerFinder workflow contains four stages (23 steps) and every 
 Yes. Although xMarkerFinder is developed for human microbiome studies, it is also generalizable to other microbial habitats. 
 #### 6. How long does it take to run xMarkerFinder?  
 The time needed for the whole workflow depends on the dataset size, selected algorithm, and computational resources available. The following time estimates are based on execution of our protocol on provided example datasets with all classifiers (Logistic Regression (LR, L1 and L2 regularization), Decision Tree (DT) classifier, Random Forest(RF) classifier, Gradient Boosting (GB) classifier, K-nearest Neighbors (KNN) classifier, and Support Vector classifier (SVC) with the Radial Basis Function kernel) using the xMarkerFinder docker image on a MacBook Pro (2.4-GHz quad-core eighth-generation Intel Core i5 processor, 16-GB 2133-MHz LPDDR3 memory).  
-|     Stage                    |     Step    |     RF             |     DT            |     KNN           |     SVC            |
-|------------------------------|-------------|--------------------|-------------------|-------------------|--------------------|
-|     Data preparation         |     1       |     0m20.600s      |     0m20.600s     |     0m20.600s     |     0m20.600s      |
-|                              |     2       |     0m11.372s      |     0m11.372s     |     0m11.372s     |     0m11.372s      |
-|                              |     3       |     1m21.356s      |     1m21.356s     |     1m21.356s     |     1m21.356s      |
-|                              |     4       |     0m24.858s      |     0m24.858s     |     0m24.858s     |     0m24.858s      |
-|     Model construction       |     5       |     0m12.464s      |     0m12.464s     |     0m12.464s     |     0m12.464s      |
-|                              |     6a      |     1m43.332s      |     0m3.252s      |     0m3.105s      |     0m50.913s      |
-|                              |     6b      |     0m0.863s       |     0m1.015s      |     0m1.178s      |     0m1.102s       |
-|                              |     6c      |     18m37.552s     |     0m53.413s     |     0m21.103s     |     10m32.261s     |
-|                              |     6*      |     24m59.785s     |     24m59.785s    |     24m59.785s    |     24m59.785s     |
-|                              |     7       |     8m57.417s      |     0m34.801s     |     0m42.348s     |     0m35.112s      |
-|     Model validation         |     8       |     123m25.805s    |     4m31.044s     |     6m10.515s     |     10m15.050s     |
-|                              |     9a      |     0m7.120s       |     0m4.002       |     0m3.761s      |     0m3.150s       |
-|                              |     9b      |     2m25.064s      |     0m5.315s      |     0m5.287s      |     0m4.426s       |
-|                              |     9b*     |     2m21.262s      |     0m6.646s      |     0m7.342s      |     0m22.211s      |
-|     Marker Interpretation    |     10      |     0m46.265s      |     0m4.041s      |     0m21.809s     |     0m16.746s      |
-|                              |     11      |     6m32.696s      |     6m32.696s     |     6m32.696s     |     6m32.696s      |
-|                              |     12      |     7m57.119s      |     7m57.119s     |     7m57.119s     |     7m57.119s      |
+|     Stage                                    |     Step     |     LRl1          |     LRl2          |     DT            |     RF             |     GB             |     KNN           |     SVC            |
+|----------------------------------------------|--------------|-------------------|-------------------|-------------------|--------------------|--------------------|-------------------|--------------------|
+|     Differential signature identification    |     1        |     0m20.600s     |     0m20.600s     |     0m20.600s     |     0m20.600s      |     0m20.600s      |     0m20.600s     |     0m20.600s      |
+|                                              |     2        |     0m11.372s     |     0m11.372s     |     0m11.372s     |     0m11.372s      |     0m11.372s      |     0m11.372s     |     0m11.372s      |
+|                                              |     3        |     1m21.356s     |     1m21.356s     |     1m21.356s     |     1m21.356s      |     1m21.356s      |     1m21.356s     |     1m21.356s      |
+|                                              |     4        |     0m24.858s     |     0m24.858s     |     0m24.858s     |     0m24.858s      |     0m24.858s      |     0m24.858s     |     0m24.858s      |
+|                                              |     Total    |     2m18.186s     |     2m18.186s     |     2m18.186s     |     2m18.186s      |     2m18.186s      |     2m18.186s     |     2m18.186s      |
+|     Model construction                       |     5        |     0m12.464s     |     0m12.464s     |     0m12.464s     |     0m12.464s      |     0m12.464s      |     0m12.464s     |     0m12.464s      |
+|                                              |     6a       |     0m2.733s      |     0m3.032s      |     0m3.252s      |     1m43.332s      |     0m49.196s      |     0m3.105s      |     0m50.913s      |
+|                                              |     6b       |     0m0.846s      |     0m1.150s      |     0m1.015s      |     0m0.863s       |     0m1.216s       |     0m1.178s      |     0m1.102s       |
+|                                              |     6c       |     0m2.447s      |     0m18.449s     |     0m53.413s     |     18m37.552s     |     47m59.647s     |     0m21.103s     |     10m32.261s     |
+|                                              |     6*       |     24m59.785s    |     24m59.785s    |     24m59.785s    |     24m59.785s     |     24m59.785s     |     24m59.785s    |     24m59.785s     |
+|                                              |     7        |     0m30.420s     |     0m24.735s     |     0m34.801s     |     8m57.417s      |     8m12.045s      |     0m42.348s     |     0m35.112s      |
+|                                              |     Total    |     25m48.695s    |     25m59.615s    |     26m44.730s    |     54m31.413s     |     82m14.353s     |     26m19.983s    |     37m11.637s     |
+|     Model validation                         |     8        |     4m30.737s     |     4m42.105s     |     4m31.044s     |     91m52.940s     |     65m47.511s     |     6m10.515s     |     10m15.050s     |
+|                                              |     9a       |     0m3.896s      |     0m3.776s      |     0m4.002       |     0m7.120s       |     0m4.266s       |     0m3.761s      |     0m3.150s       |
+|                                              |     9b       |     0m4.877s      |     0m4.764s      |     0m5.315s      |     2m25.064s      |     0m36.946s      |     0m5.287s      |     0m4.426s       |
+|                                              |     9b*      |     0m5.941s      |     0m5.982       |     0m6.646s      |     2m21.262s      |     0m39.554s      |     0m7.342s      |     0m22.211s      |
+|                                              |     Total    |     4m45.451s     |     4m56.627      |     4m47.007s     |     96m46.386s     |     67m8.277s      |     6m26.905s     |     10m44.837s     |
+|     Marker Interpretation                    |     10       |     0m3.270s      |     0m3.599s      |     0m4.041s      |     0m46.265s      |     0m5.028s       |     0m21.809s     |     0m16.746s      |
+|                                              |     11       |     6m32.696s     |     6m32.696s     |     6m32.696s     |     6m32.696s      |     6m32.696s      |     6m32.696s     |     6m32.696s      |
+|                                              |     12       |     7m57.119s     |     7m57.119s     |     7m57.119s     |     7m57.119s      |     7m57.119s      |     7m57.119s     |     7m57.119s      |
+|                                              |     Total    |     14m33.085s    |     14m33.414s    |     14m33.856s    |     15m16.080s     |     14m34.843s     |     14m51.624s    |     14m46.561s     |
+|     xMarkerFinder                            |     Total    |     47m25.417s    |     47m47.842s    |     48m23.779s    |     168m52.065s    |     166m15.659s    |     49m56.698s    |     65m1.221s      |
 #### 7. What skills are required to run xMarkerFinder?  
 Preliminary understanding of shell scripts would allow users to complete the whole workflow. Intermediate experience of R and python would facilitate users to better interpret and modify the codes.
 #### 8. Is xMarkerFinder a pipeline for meta-analysis?  
