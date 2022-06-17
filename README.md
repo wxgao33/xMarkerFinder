@@ -313,7 +313,7 @@ $ python 11a_Convert.py -W /workplace/ -p abundance.txt -s selected_feature.txt 
 ```
 ```
 -p input feature raw count file before normalization.
--s selected features for calculating microbial correlation (could be *differential signatures* or *candidate markers*, output file of Step 4,9, or 10).
+-s selected features for calculating microbial correlation (could be differential signatures or candidate markers, output file of Step 4 or 6).
 ```
 - Input files:  
 abundance.txt: microbial raw count profile before normalization.  
