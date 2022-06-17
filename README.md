@@ -1,5 +1,5 @@
-# Identification and validation of microbial marker from cross-cohort datasets using xMarkerFinder
-xMarkerFinder is a four-stage workflow for microbiome research including differential signature identification, model construction, model validation, and marker interpretation. Detailed [scripts](./scripts), [example files](./data), and a ready-to-use [docker image](https://hub.docker.com/repository/docker/tjcadd2022/xmarkerfinder) are provided.  
+# Identification and validation of microbial biomarkers from cross-cohort datasets using xMarkerFinder
+xMarkerFinder is a four-stage workflow for microbiome research including differential signature identification, model construction, model validation, and biomarker interpretation. Detailed [scripts](./scripts), [example files](./data), and a ready-to-use [docker image](https://hub.docker.com/repository/docker/tjcadd2022/xmarkerfinder) are provided.  
 
 ![ ](https://img.shields.io/badge/python-3.7-blue) ![GitHub top language](https://img.shields.io/github/languages/top/tjcadd2020/xMarkerFinder)  ![GitHub](https://img.shields.io/github/license/tjcadd2020/xMarkerFinder) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/tjcadd2020/xMarkerFinder) [![GitHub version](https://badge.fury.io/gh/tjcadd2020%2FxMarkerFinder.svg)](https://badge.fury.io/gh/tjcadd2020%2FxMarkerFinder) ![GitHub issues](https://img.shields.io/github/issues/tjcadd2020/xMarkerFinder) [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/tjcadd2020/xMarkerFinder/HEAD) [![](https://img.shields.io/badge/website-CADD-lightgrey)](https://cadd.tongji.edu.cn/)
 
@@ -9,7 +9,7 @@ xMarkerFinder is a four-stage workflow for microbiome research including differe
   * [Stage 1 Differential signature identification](#stage-1-differential-signature-identification)
   * [Stage 2 Model construction](#stage-2-model-construction)
   * [Stage 3 Model validation](#stage-3-model-validation)
-  * [Stage 4 Marker interpretation](#stage-4-marker-interpretation)
+  * [Stage 4 Biomarker interpretation](#stage-4-biomarker-interpretation)
 * [FAQs](#faqs)
   * [Part I General questions](#part-i-general-questions)
   * [Part II Data processing](#part-ii-data-processing)
@@ -287,14 +287,14 @@ other_profile.txt: the relative abundance matrix of other diseases.
 - Output files:  
 specificity_add_result.txt: AUC values of models constructed with candidate markers in other related diseases.  
 specificity_add_auc.pdf: the visualization of the specificity_result.txt.  
-### Stage 4 Marker interpretation.
-#### 10.	Marker importance.
-Permutation feature importance is employed here to evaluate markers’ contributions in the best-performing classification model.  
+### Stage 4 Biomarker interpretation.
+#### 10.	Biomarker importance.
+Permutation feature importance is employed here to evaluate biomarkers’ contributions in the best-performing classification model.  
 ```
-$ python 10_Marker_importance.py -W /workplace/ -m train_metadata.txt -p candidate_marker.txt -g Group -e exposure -c classifier -r best_param.txt -s 0 -o TEST
+$ python 10_Biomarker_importance.py -W /workplace/ -m train_metadata.txt -p candidate_marker.txt -g Group -e exposure -c classifier -r best_param.txt -s 0 -o TEST
 ```
 ```
--p input candidate markers (output file of Step 6)
+-p input candidate biomarkers (output file of Step 6)
 -r input optimal hyperparameter file (output file of Step 7)
 ```
 - Input files:  
@@ -379,54 +379,54 @@ results/hallagram.png: the visualization of all_associations.txt with only signi
 ## FAQs
 ### Part I General questions
 #### 1. When should I use xMarkerFinder?  
-xMarkerFinder is suitable for microbial marker identification from cross-cohort datasets. Our previous studies demonstrated its applicability in identifying global microbial diagnostic markers for adenoma and colorectal cancer. Moreover, xMarkerFinder could also be applied to marker determination in disease prognosis, treatment stratification, metastasis surveillance, adverse reactions anticipation, etc. Any research dedicated to marker identification from multi-population microbial datasets are welcome.
+xMarkerFinder is suitable for microbial biomarker identification from cross-cohort datasets. Our previous studies demonstrated its applicability in identifying global microbial diagnostic biomarkers for adenoma and colorectal cancer. Moreover, xMarkerFinder could also be applied to biomarker determination in disease prognosis, treatment stratification, metastasis surveillance, adverse reactions anticipation, etc. Any research dedicated to biomarker identification from multi-population microbial datasets are welcome.
 #### 2. How should I setup the required computational environment for xMarkerFinder?  
 We provide detailed instructions on software installation for users to run the whole xMarkerFinder workflow locally. However, we strongly encourage the usage of provided docker image as it would significantly reduce potential errors in the entire installation and setup process. (https://hub.docker.com/r/tjcadd2022/xmarkerfinder)
 #### 3. Can I access and modify the codes used in xMarkerFinder?  
-Yes. The codes used in xMarkerFinder are deposited in our GitHub repository and can be freely downloaded and modified according to users’ specific needs. However, the modification might cause unprecedented errors and we encourage users to try different parameters first, and then modify the codes. (https://github.com/tjcadd2020/xMarkerFinder)
+Yes. The [codes](./scripts) used in xMarkerFinder are deposited in our GitHub repository and can be freely downloaded and modified according to users’ specific needs. However, the modification might cause unprecedented errors and we encourage users to try different parameters first, and then modify the codes.
 #### 4. Can I use only certain steps of xMarkerFinder and skip other parts?  
 Yes. The whole xMarkerFinder workflow contains four stages (12 steps) and every stage/step can be conducted independently and users could skip any one of them according to specific study designs.
 #### 5. Can I use xMarkerFinder on environmental microbiome researches?  
 Yes. Although xMarkerFinder is developed for human microbiome studies, it is also generalizable to other microbial habitats. 
 #### 6. How long does it take to run xMarkerFinder?  
-The time needed for the whole workflow depends on the dataset size, selected algorithm, and computational resources available. The following time estimates are based on execution of our protocol on provided example datasets with all classifiers (Logistic Regression (LR, L1 and L2 regularization), Decision Tree (DT) classifier, Random Forest(RF) classifier, Gradient Boosting (GB) classifier, K-nearest Neighbors (KNN) classifier, and Support Vector classifier (SVC) with the Radial Basis Function kernel) using the xMarkerFinder docker image on a MacBook Pro (2.4-GHz quad-core eighth-generation Intel Core i5 processor, 16-GB 2133-MHz LPDDR3 memory).  
-|     Stage                                    |     Step     |     LRl1          |     LRl2          |     DT            |     RF             |     GB             |     KNN           |     SVC            |
-|----------------------------------------------|--------------|-------------------|-------------------|-------------------|--------------------|--------------------|-------------------|--------------------|
-|     Differential signature identification    |     1        |     0m20.600s     |     0m20.600s     |     0m20.600s     |     0m20.600s      |     0m20.600s      |     0m20.600s     |     0m20.600s      |
-|                                              |     2        |     0m11.372s     |     0m11.372s     |     0m11.372s     |     0m11.372s      |     0m11.372s      |     0m11.372s     |     0m11.372s      |
-|                                              |     3        |     1m21.356s     |     1m21.356s     |     1m21.356s     |     1m21.356s      |     1m21.356s      |     1m21.356s     |     1m21.356s      |
-|                                              |     4        |     0m24.858s     |     0m24.858s     |     0m24.858s     |     0m24.858s      |     0m24.858s      |     0m24.858s     |     0m24.858s      |
-|                                              |     Total    |     2m18.186s     |     2m18.186s     |     2m18.186s     |     2m18.186s      |     2m18.186s      |     2m18.186s     |     2m18.186s      |
-|     Model construction                       |     5        |     0m12.464s     |     0m12.464s     |     0m12.464s     |     0m12.464s      |     0m12.464s      |     0m12.464s     |     0m12.464s      |
-|                                              |     6a       |     0m2.733s      |     0m3.032s      |     0m3.252s      |     1m43.332s      |     0m49.196s      |     0m3.105s      |     0m50.913s      |
-|                                              |     6b       |     0m0.846s      |     0m1.150s      |     0m1.015s      |     0m0.863s       |     0m1.216s       |     0m1.178s      |     0m1.102s       |
-|                                              |     6c       |     0m2.447s      |     0m18.449s     |     0m53.413s     |     18m37.552s     |     47m59.647s     |     0m21.103s     |     10m32.261s     |
-|                                              |     6*       |     24m59.785s    |     24m59.785s    |     24m59.785s    |     24m59.785s     |     24m59.785s     |     24m59.785s    |     24m59.785s     |
-|                                              |     7        |     0m30.420s     |     0m24.735s     |     0m34.801s     |     8m57.417s      |     8m12.045s      |     0m42.348s     |     0m35.112s      |
-|                                              |     Total    |     25m48.695s    |     25m59.615s    |     26m44.730s    |     54m31.413s     |     82m14.353s     |     26m19.983s    |     37m11.637s     |
-|     Model validation                         |     8        |     4m30.737s     |     4m42.105s     |     4m31.044s     |     91m52.940s     |     65m47.511s     |     6m10.515s     |     10m15.050s     |
-|                                              |     9a       |     0m3.896s      |     0m3.776s      |     0m4.002       |     0m7.120s       |     0m4.266s       |     0m3.761s      |     0m3.150s       |
-|                                              |     9b       |     0m4.877s      |     0m4.764s      |     0m5.315s      |     2m25.064s      |     0m36.946s      |     0m5.287s      |     0m4.426s       |
-|                                              |     9b*      |     0m5.941s      |     0m5.982       |     0m6.646s      |     2m21.262s      |     0m39.554s      |     0m7.342s      |     0m22.211s      |
-|                                              |     Total    |     4m45.451s     |     4m56.627      |     4m47.007s     |     96m46.386s     |     67m8.277s      |     6m26.905s     |     10m44.837s     |
-|     Marker Interpretation                    |     10       |     0m3.270s      |     0m3.599s      |     0m4.041s      |     0m46.265s      |     0m5.028s       |     0m21.809s     |     0m16.746s      |
-|                                              |     11       |     6m32.696s     |     6m32.696s     |     6m32.696s     |     6m32.696s      |     6m32.696s      |     6m32.696s     |     6m32.696s      |
-|                                              |     12       |     7m57.119s     |     7m57.119s     |     7m57.119s     |     7m57.119s      |     7m57.119s      |     7m57.119s     |     7m57.119s      |
-|                                              |     Total    |     14m33.085s    |     14m33.414s    |     14m33.856s    |     15m16.080s     |     14m34.843s     |     14m51.624s    |     14m46.561s     |
-|     xMarkerFinder                            |     Total    |     47m25.417s    |     47m47.842s    |     48m23.779s    |     168m52.065s    |     166m15.659s    |     49m56.698s    |     65m1.221s      |
+The time needed for the whole workflow depends on the dataset size, selected algorithm, and computational resources available. The following time estimates are based on execution of our protocol on provided example datasets with all classifiers (Logistic Regression (LR, L1 and L2 regularization), K-nearest Neighbors (KNN) classifier, Support Vector classifier (SVC) with the Radial Basis Function kernel), Decision Tree (DT) classifier, Random Forest(RF) classifier, and Gradient Boosting (GB) classifier using the xMarkerFinder docker image on a MacBook Pro (2.4-GHz quad-core eighth-generation Intel Core i5 processor, 16-GB 2133-MHz LPDDR3 memory).  
+|     Stage                                                   |     Step     |     LRl1          |     LRl2          |     SVC           |     KNN           |     DT            |     RF             |     GB             |
+|-------------------------------------------------------------|--------------|-------------------|-------------------|-------------------|-------------------|-------------------|--------------------|--------------------|
+|     Stage1：     Differential signature   identification    |     1        |     0m20.600s     |     0m20.600s     |     0m20.600s     |     0m20.600s     |     0m20.600s     |     0m20.600s      |     0m20.600s      |
+|                                                             |     2        |     0m11.372s     |     0m11.372s     |     0m11.372s     |     0m11.372s     |     0m11.372s     |     0m11.372s      |     0m11.372s      |
+|                                                             |     3        |     1m21.356s     |     1m21.356s     |     1m21.356s     |     1m21.356s     |     1m21.356s     |     1m21.356s      |     1m21.356s      |
+|                                                             |     4        |     0m24.858s     |     0m24.858s     |     0m24.858s     |     0m24.858s     |     0m24.858s     |     0m24.858s      |     0m24.858s      |
+|                                                             |     Total    |     2m18.186s     |     2m18.186s     |     2m18.186s     |     2m18.186s     |     2m18.186s     |     2m18.186s      |     2m18.186s      |
+|     Stage2：     Model construction                         |     5        |     0m12.464s     |     0m12.464s     |     0m12.464s     |     0m12.464s     |     0m12.464s     |     0m12.464s      |     0m12.464s      |
+|                                                             |     6a       |     0m2.733s      |     0m3.032s      |     0m50.913s     |     0m3.105s      |     0m3.252s      |     1m43.332s      |     0m49.196s      |
+|                                                             |     6b       |     0m0.846s      |     0m1.150s      |     0m1.102s      |     0m1.178s      |     0m1.015s      |     0m0.863s       |     0m1.216s       |
+|                                                             |     6c       |     0m2.447s      |     0m18.449s     |     10m32.261s    |     0m21.103s     |     0m53.413s     |     18m37.552s     |     47m59.647s     |
+|                                                             |     6*       |     24m59.785s    |     24m59.785s    |     24m59.785s    |     24m59.785s    |     24m59.785s    |     24m59.785s     |     24m59.785s     |
+|                                                             |     7        |     0m30.420s     |     0m24.735s     |     0m35.112s     |     0m42.348s     |     0m34.801s     |     8m57.417s      |     8m12.045s      |
+|                                                             |     Total    |     25m48.695s    |     25m59.615s    |     37m11.637s    |     26m19.983s    |     26m44.730s    |     54m31.413s     |     82m14.353s     |
+|     Stage3：     Model validation                           |     8        |     4m30.737s     |     4m42.105s     |     10m15.050s    |     6m10.515s     |     4m31.044s     |     91m52.940s     |     65m47.511s     |
+|                                                             |     9a       |     0m3.896s      |     0m3.776s      |     0m3.150s      |     0m3.761s      |     0m4.002       |     0m7.120s       |     0m4.266s       |
+|                                                             |     9b       |     0m4.877s      |     0m4.764s      |     0m4.426s      |     0m5.287s      |     0m5.315s      |     2m25.064s      |     0m36.946s      |
+|                                                             |     9b*      |     0m5.941s      |     0m5.982       |     0m22.211s     |     0m7.342s      |     0m6.646s      |     2m21.262s      |     0m39.554s      |
+|                                                             |     Total    |     4m45.451s     |     4m56.627      |     10m44.837s    |     6m26.905s     |     4m47.007s     |     96m46.386s     |     67m8.277s      |
+|     Stage4：     Biomarker interpretation                   |     10       |     0m3.270s      |     0m3.599s      |     0m16.746s     |     0m21.809s     |     0m4.041s      |     0m46.265s      |     0m5.028s       |
+|                                                             |     11       |     6m32.696s     |     6m32.696s     |     6m32.696s     |     6m32.696s     |     6m32.696s     |     6m32.696s      |     6m32.696s      |
+|                                                             |     12       |     7m57.119s     |     7m57.119s     |     7m57.119s     |     7m57.119s     |     7m57.119s     |     7m57.119s      |     7m57.119s      |
+|                                                             |     Total    |     14m33.085s    |     14m33.414s    |     14m46.561s    |     14m51.624s    |     14m33.856s    |     15m16.080s     |     14m34.843s     |
+|     Total                                                   |     /        |     47m25.417s    |     47m47.842s    |     65m1.221s     |     49m56.698s    |     48m23.779s    |     168m52.065s    |     166m15.659s    |
 #### 7. What skills are required to run xMarkerFinder?  
 Preliminary understanding of shell scripts would allow users to complete the whole workflow. Intermediate experience of R and python would facilitate users to better interpret and modify the codes.
 #### 8. Is xMarkerFinder a pipeline for meta-analysis?  
-Yes. xMarkerFinder aims to integrate different datasets and establish replicable markers. However, xMarkerFinder differs from systematic review as it integrates original datasets instead of the respective results.
+Yes. xMarkerFinder aims to integrate different datasets and establish replicable biomarkers. However, xMarkerFinder differs from systematic review as it integrates original datasets instead of the respective results.
 ### Part II Data processing
 #### 1.	What kind of data should I use for xMarkerFinder?
 Processed microbial count matrices and corresponding metadata are required. For cross-cohort analysis, we require merged datasets from at least three cohorts in the dicovery set to accomplish the full protocol with internal validations. xMarkerFinder is well adapted to microbial taxonomic and functional profiles derived from both amplicon and whole metagenomics sequencing data, as well as other omics layers, including but not limited to metatranscriptomics, metaproteomics, and metabolomics.
 #### 2. If I don’t have the corresponding metadata, can I still use xMarkerFinder?
-To perform meta-analysis, corresponding sample groups are required. Other metadata indices, such as body mass index, age and gender are recommended but not necessary. However, it is worth noticing that the absence of metadata information might compromise the correction for confounding effects and the identification of microbial markers.  
+To perform meta-analysis, corresponding sample groups are required. Other metadata indices, such as body mass index, age and gender are recommended but not necessary. However, it is worth noticing that the absence of metadata information might compromise the correction for confounding effects and the identification of microbial biomarkers.  
 #### 3.	Why should I normalize my data?
 To mitigate challenges induced by different number of sequencing (e.g. library sizes), microbial count profiles are converted to relative abundances for subsequent analysis in xMarkerFinder.
 #### 4.	Why should I perform data filtering?
-To identify a replicable panel of microbial markers, we need to exclude rare microbial features, those with low occurrence rates across cohorts as they are not ideal candidates as global markers.
+To identify a replicable panel of microbial biomarkers, we need to exclude rare microbial features, those with low occurrence rates across cohorts as they are not ideal candidates as global biomarkers.
 #### 5.	What does the training and test set do and why should I separate them?
 To ensure models’ reliability, datasets are split to training/discovery and test set. Training set is used to train and have the model learn the hidden pattern. Test set is used to test the model after completing the training process and provides unbiased final model performance results.  
 ### Part III Using xMarkerFinder
