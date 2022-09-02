@@ -299,7 +299,7 @@ class machine_learning:
         
         return clf, mean_auc,mean_spe,mean_sen,mean_pre,mean_f1,mean_accu,(plot_data, mean_fpr, mean_tpr, tprs,aucs, np.std(aucs))
 
-    def plot_auc(self,plot_data):
+    def plot_auc(self,model_result):
         lines, mean_fpr, mean_tpr, tprs, aucs, std_auc = model_result[7]
         mean_auc = model_result[1]
         font1 = {'weight' : 'normal','size': 12}
