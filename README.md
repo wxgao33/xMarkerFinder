@@ -1,7 +1,12 @@
 # Identification and validation of microbial biomarkers from cross-cohort datasets using xMarkerFinder
-xMarkerFinder is a four-stage workflow for microbiome research including differential signature identification, model construction, model validation, and biomarker interpretation. Detailed [scripts](./scripts), [example files](./data), and a ready-to-use [docker image](https://hub.docker.com/repository/docker/tjcadd2022/xmarkerfinder) are provided.  
+xMarkerFinder is a four-stage workflow for microbiome research including differential signature identification, model construction, model validation, and biomarker interpretation. Detailed [scripts](./scripts), [example files](./data), and a ready-to-use [docker image](https://hub.docker.com/repository/docker/tjcadd2022/xmarkerfinder) are provided. Manuscript is available at https://doi.org/10.21203/rs.3.pex-1984/v1. 
 
-![ ](https://img.shields.io/badge/python-3.7-blue) ![GitHub top language](https://img.shields.io/github/languages/top/tjcadd2020/xMarkerFinder)  ![GitHub](https://img.shields.io/github/license/tjcadd2020/xMarkerFinder) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/tjcadd2020/xMarkerFinder) [![GitHub version](https://badge.fury.io/gh/tjcadd2020%2FxMarkerFinder.svg)](https://badge.fury.io/gh/tjcadd2020%2FxMarkerFinder) ![GitHub issues](https://img.shields.io/github/issues/tjcadd2020/xMarkerFinder) [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/tjcadd2020/xMarkerFinder/HEAD) [![](https://img.shields.io/badge/website-CADD-lightgrey)](https://cadd.tongji.edu.cn/)
+![ ](https://img.shields.io/badge/python-3.7-blue) ![GitHub top language](https://img.shields.io/github/languages/top/tjcadd2020/xMarkerFinder)  ![GitHub](https://img.shields.io/github/license/tjcadd2020/xMarkerFinder) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/tjcadd2020/xMarkerFinder) [![GitHub version](https://badge.fury.io/gh/tjcadd2020%2FxMarkerFinder.svg)](https://badge.fury.io/gh/tjcadd2020%2FxMarkerFinder) ![GitHub issues](https://img.shields.io/github/issues/tjcadd2020/xMarkerFinder) [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/tjcadd2020/xMarkerFinder/HEAD) [![](https://img.shields.io/badge/website-CADD-lightgrey)](https://cadd.tongji.edu.cn/)  
+  
+<img width="400" alt="image" src="https://user-images.githubusercontent.com/54845977/188053062-dd189428-ae8d-44a4-844c-1e3d4565ff60.png">
+
+## Citation
+Please cite: Wenxing Gao, Wanning Chen, Wenjing Yin et al. Identification and validation of microbial biomarkers from cross-cohort datasets using xMarkerFinder, 25 August 2022, PROTOCOL (Version 1) available at Protocol Exchange [https://doi.org/10.21203/rs.3.pex-1984/v1]
 
 ## Table of Contents
 * [User Tutorial](#user-tutorial)
