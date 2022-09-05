@@ -369,7 +369,7 @@ microbial_network.csv: adjusted network profile for Gephi input, only significan
 
 (iv)  Choose a preferable layout type to form the basic network and press the “stop” button when the network becomes stable (Fruchterman Reingold style is recommended).  
 <img width="415" alt="image" src="https://user-images.githubusercontent.com/54845977/171319813-0fed579e-6c7d-4581-bf7e-174aa8d391e1.png">   
-(v)  For further optimization of the network, appearances of nodes and edges should be adjusted according to users’ need, as well as the labels of nodes. <img width="415" alt="image" src="https://user-images.githubusercontent.com/54845977/171319835-a572168e-fad4-47d0-a03b-16b528c99d54.png">    
+(v)  For further optimization of the network, appearances of nodes and edges should be adjusted according to users’ need, as well as the labels of nodes.   <img width="415" alt="image" src="https://user-images.githubusercontent.com/54845977/171319835-a572168e-fad4-47d0-a03b-16b528c99d54.png">    
 
 #### 12.	Multi-omics correlation. 
 If users have multi-omics or multidimensional microbial profiles of the same dataset, the correlation between different omics or dimensions are calculated via HAllA.
