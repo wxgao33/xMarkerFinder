@@ -367,9 +367,9 @@ microbial_network.csv: adjusted network profile for Gephi input, only significan
 (iii) Import the network file.  
 <img width="383" alt="image" src="https://user-images.githubusercontent.com/54845977/173520895-9c15d969-13eb-4b07-9c9c-fa83b6ae00e9.png">
 
-(iv)  Choose a preferable layout type to form the basic network and press the “stop” button when the network becomes stable (Fruchterman Reingold style is recommended).  
+(iv)  Choose a preferable layout type to form the basic network and press the “stop” button when the network becomes stable (Fruchterman Reingold style is recommended).    
 <img width="415" alt="image" src="https://user-images.githubusercontent.com/54845977/171319813-0fed579e-6c7d-4581-bf7e-174aa8d391e1.png">   
-(v)  For further optimization of the network, appearances of nodes and edges should be adjusted according to users’ need, as well as the labels of nodes.
+(v)  For further optimization of the network, appearances of nodes and edges should be adjusted according to users’ need, as well as the labels of nodes.  
 <img width="415" alt="image" src="https://user-images.githubusercontent.com/54845977/171319835-a572168e-fad4-47d0-a03b-16b528c99d54.png">    
 
 #### 12.	Multi-omics correlation. 
