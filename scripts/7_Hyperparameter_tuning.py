@@ -187,7 +187,7 @@ class machine_learning:
             f = gb_crossval,
             pbounds = {
                 "n_estimators" : (10, 500),
-                "learning_rate" : (0, 1),
+                "learning_rate" : (0.0001, 1),
                 "subsample" : (0.4,1),
                 "max_depth" : (1,5),
                 "max_features" : (0.1, 0.999)

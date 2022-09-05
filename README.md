@@ -46,6 +46,7 @@ Please cite: Wenxing Gao, Wanning Chen, Wenjing Yin et al. Identification and va
 - Matplotlib (https://matplotlib.org/)
 - seaborn (https://seaborn.pydata.org/)
 #### Docker image
+
 Above software list provides the minimal requirements for the complete execution of xMarkerFinder locally. Alternatively, we provide a ready-to-use Docker image, enabling users to skip the software installation and environment setup (https://hub.docker.com/r/tjcadd2022/xmarkerfinder). Additionally, an interactive JupyterHub server (https://mybinder.org/v2/gh/tjcadd2020/xMarkerFinder/HEAD) is also available.
 ```
 $ docker run -it -v $(pwd):/work tjcadd2022/xmarkerfinder:1.0.14 /bin/bash  
@@ -127,6 +128,11 @@ differential_volcano.pdf: the volcano plot of input differential significance fi
 ### Stage 2 Model construction
 #### 5.	Classifier selection.   
 This step provides optional classifier selection for subsequent steps where the performances of every ML algorithm are generally assessed using all *differential signatures*. The output file contains the cross-validation AUC, specificity, sensitivity, accuracy, precision and F1 score of all classification models built with these various algorithms. Users should specify the selected classifier in all following steps.
+differential_signature.txt: significantly differential signatures between groups derived from input filtered profiles, used as input files for feature selection.  
+differential_volcano.pdf: the volcano plot of input differential significance file.     
+### Stage 2 Model construction
+#### 5.	Classifier selection.   
+This step provides optional classifier selection for subsequent steps where the performances of every ML algorithm are generally assessed using all differential signatures. The output file contains the cross-validation AUC, specificity, sensitivity, accuracy, precision and F1 score of all classification models built with these various algorithms. Users should specify the selected classifier in all following steps.
 ```
 $ python 5_Classifier_selection.py -W /workplace/ -m train_metadata.txt -p differential_signature.txt -g Group -e exposure -s 0 -o TEST
 ```
@@ -380,6 +386,10 @@ microbial_abundance_2.txt: microbial abundance profile 2. These two input files 
 - Output files:  
 results/all_associations.txt: associations between different omics or dimensions.  
 results/hallagram.png: the visualization of all_associations.txt with only significant associations highlighted.   
+
+
+
+
 
 ## FAQs
 ### Part I General questions
