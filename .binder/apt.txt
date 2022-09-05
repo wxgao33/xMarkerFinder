@@ -1,0 +1,8 @@
+git
+parallel
+libarmadillo-dev
+libopenblas-dev
+dh-autoreconf
+libffi6
+libffi-dev
+libgsl-dev

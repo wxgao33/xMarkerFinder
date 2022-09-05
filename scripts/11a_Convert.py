@@ -2,10 +2,10 @@ import pandas as pd
 import argparse
 
 #import data
-parser = argparse.ArgumentParser(description = "Convert files for Step 20")
+parser = argparse.ArgumentParser(description = "Convert files for Step 11b")
 parser.add_argument('--Workplace','-W',help = 'Workplace : Input and output work place')
 parser.add_argument('--profile','-p',help = 'input file : microbial profile')
-parser.add_argument('--select','-s',help = 'input file : selected signatures for Step 20')
+parser.add_argument('--select','-s',help = 'input file : selected signatures for Step 11b')
 parser.add_argument('--output','-o',help = 'output file prefix: convert result')
 args = parser.parse_args()
 

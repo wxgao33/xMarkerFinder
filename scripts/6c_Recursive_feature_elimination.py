@@ -123,5 +123,5 @@ class machine_learning:
 #Stage3C Recursive feature elimination
 ML = machine_learning()
 _,optimal_biomarkers = ML.RFE2(data,data_group)
-data.loc[:,optimal_biomarkers].to_csv(args.Workplace+args.output+"_candidate_marker.txt", sep = '\t')
+data.loc[:,optimal_biomarkers].to_csv(args.Workplace+args.output+"_candidate_biomarker.txt", sep = '\t')
 print("FINISH")
