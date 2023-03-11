@@ -50,7 +50,7 @@ best_param= [{k: int(v) if v and '.' not in v else float(v) if v else None for k
 dict = {'LRl1':LogisticRegression(penalty='l1', random_state=RANDOM_SEED, solver='liblinear', class_weight='balanced'),
 'LRl2':LogisticRegression(penalty='l2', random_state=RANDOM_SEED, solver='liblinear', class_weight='balanced'),
 'DT':DecisionTreeClassifier(class_weight='balanced', random_state=RANDOM_SEED),
-'RF':RandomForestClassifier(oob_score=True, class_weight='balanced'),
+'RF':RandomForestClassifier(oob_score=True, class_weight='balanced',random_state=RANDOM_SEED),
 'GB':GradientBoostingClassifier(random_state=RANDOM_SEED),
 'KNN':KNeighborsClassifier(n_neighbors=3),
 'SVC':SVC(class_weight='balanced',random_state=RANDOM_SEED,probability = True)}
