@@ -72,7 +72,7 @@ axis.2.title <- paste('PCoA2 ',
 df.plot <- data.frame(Axis1 = -1*pco.results$points[,1],
                   Axis2 = pco.results$points[,2],
                   Sample_ID = rownames(pco.results$points),
-                  Group=metadata[group])
+                  Group=unlist(metadata[group]))
 
 pcoa_plot<-ggplot(df.plot,aes(x=Axis1,y=Axis2,colour=Group))+
                     geom_point(alpha =.7, size=4)+

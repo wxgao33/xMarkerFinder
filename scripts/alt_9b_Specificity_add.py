@@ -40,11 +40,11 @@ args = parser.parse_args()
 
 metadata = pd.read_table(args.Workplace+args.metadata,sep = '\t',index_col = 0)
 opt_biomarker = pd.read_table(args.Workplace+args.profile,sep = '\t',index_col=0)
-data_group = np.array([1 if i== str(args.exposure) else 0 for i in metadata[str(args.group)]])
+data_group = np.array([0 if i== str(args.exposure) else 1 for i in metadata[str(args.group)]])
 
 ex_metadata = pd.read_table(args.Workplace+args.external_metadata,sep = '\t',index_col = 0)
 ex_data = pd.read_table(args.Workplace+args.external_profile,sep = '\t',index_col=0)
-ex_data_group = np.array([1 if i== str(args.exposure) else 0 for i in ex_metadata[str(args.group)]])
+ex_data_group = np.array([0 if i== str(args.exposure) else 1 for i in ex_metadata[str(args.group)]])
 ex_data = pd.DataFrame(ex_data,columns=opt_biomarker.columns)
 ex_data = ex_data.fillna(0)
 number = int(args.number)
@@ -74,7 +74,7 @@ class machine_learning:
         self.Method = {'LRl1':LogisticRegression(penalty='l1', random_state=RANDOM_SEED, solver='liblinear', class_weight='balanced'),
                   'LRl2':LogisticRegression(penalty='l2', random_state=RANDOM_SEED, solver='liblinear', class_weight='balanced'),
                   'DT':DecisionTreeClassifier(class_weight='balanced', random_state=RANDOM_SEED),
-                  'RF':RandomForestClassifier(oob_score=True, class_weight='balanced'),
+                  'RF':RandomForestClassifier(oob_score=True, class_weight='balanced', random_state=RANDOM_SEED),
                   'GB':GradientBoostingClassifier(random_state=RANDOM_SEED),
                   'KNN':KNeighborsClassifier(n_neighbors=3),
                   'SVC':SVC(class_weight='balanced',random_state=RANDOM_SEED,probability = True)

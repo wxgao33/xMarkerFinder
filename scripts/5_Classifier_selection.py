@@ -37,7 +37,7 @@ class machine_learning:
         self.Method = {'Logisticl1':LogisticRegression(penalty='l1', random_state=RANDOM_SEED, solver='liblinear', class_weight='balanced'),
                   'Logisticl2':LogisticRegression(penalty='l2', random_state=RANDOM_SEED, solver='liblinear', class_weight='balanced'),
                   'DecisionTree':DecisionTreeClassifier(class_weight='balanced', random_state=RANDOM_SEED),
-                  'RandomForest':RandomForestClassifier(oob_score=True, class_weight='balanced'),
+                  'RandomForest':RandomForestClassifier(oob_score=True, class_weight='balanced', random_state=RANDOM_SEED),
                   'GradientBoost':GradientBoostingClassifier(random_state=RANDOM_SEED),
                   'KNeighbors':KNeighborsClassifier(n_neighbors=3),
                   'SVC':SVC(class_weight='balanced',random_state=RANDOM_SEED,probability = True)
