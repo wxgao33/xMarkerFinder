@@ -9,8 +9,11 @@ xMarkerFinder is a four-stage workflow for microbiome research including differe
 Please cite: Wenxing Gao, Wanning Chen, Wenjing Yin et al. Identification and validation of microbial biomarkers from cross-cohort datasets using xMarkerFinder, 25 August 2022, PROTOCOL (Version 1) available at Protocol Exchange [https://doi.org/10.21203/rs.3.pex-1984/v1]
 
 ## Table of Contents
-* [User Tutorial](#user-tutorial)
-  * [Environment setup](#environment-setup)
+* [Installation](#installation)
+  * [Hardware](#hardware)
+  * [Softwre](#software)
+  * [Software setup](#software-setup)
+* [User tutorial](#user-tutorial)
   * [Stage 1 Differential signature identification](#stage-1-differential-signature-identification)
   * [Stage 2 Model construction](#stage-2-model-construction)
   * [Stage 3 Model validation](#stage-3-model-validation)
@@ -21,22 +24,25 @@ Please cite: Wenxing Gao, Wanning Chen, Wenjing Yin et al. Identification and va
   * [Part III Using xMarkerFinder](#part-iii-using-xmarkerfinder)
 
 
-## User Tutorial
-### Environment setup
+## Installation
+
+### Hardware
+The protocol can be executed on standard computational hardware, and greater computational resources would allow for faster execution. The development and test of this protocol have been conducted on a MacBook Pro equipped with a 2.4-GHz quad-core eighth-generation Intel Core i5 processor and 16-GB 2133-MHz LPDDR3 memory.
+### Software
 - R v.3.6.1 or newer (https://www.r-project.org)
 - Python3 v3.7 or newer (https://www.python.org)
 - HAllA (https://huttenhower.sph.harvard.edu/halla)
 - FastSpar (https://github.com/scwatts/FastSpar)
 - Gephi (https://gephi.org)
 #### R packages
-- BiocManager (https://cran.r-project.org/web/packages/BiocManager) to ensure the installation of the following packages and their dependencies.
+- BiocManager (https://github.com/Bioconductor/BiocManager) to ensure the installation of the following packages and their dependencies.
 - MMUPHin (https://huttenhower.sph.harvard.edu/mmuphin)
-- dplyr (https://cran.r-project.org/web/packages/dplyr)
-- vegan (https://cran.r-project.org/web/packages/vegan/)
-- XICOR (https://cran.r-project.org/web/packages/XICOR/)
-- eva (https://cran.r-project.org/web/packages/eva/)
-- labdsv (https://cran.r-project.org/web/packages/labdsv/)
-- Boruta (https://cran.r-project.org/web/packages/Boruta/, optional)
+- dplyr (https://dplyr.tidyverse.org/)
+- vegan (https://github.com/vegandevs/vegan)
+- XICOR (https://github.com/cran/XICOR)
+- eva (https://github.com/brianbader/eva_package)
+- labdsv (https://github.com/cran/labdsv)
+- Boruta (https://gitlab.com/mbq/Boruta, optional)
 #### python packages
 - pandas (https://pandas.pydata.org)
 - NumPy (https://numpy.org/)
@@ -46,9 +52,52 @@ Please cite: Wenxing Gao, Wanning Chen, Wenjing Yin et al. Identification and va
 - Matplotlib (https://matplotlib.org/)
 - seaborn (https://seaborn.pydata.org/)
 #### Docker image
-
 Above software list provides the minimal requirements for the complete execution of xMarkerFinder locally. Alternatively, we provide a ready-to-use Docker image, enabling users to skip the software installation and environment setup (https://hub.docker.com/r/tjcadd2022/xmarkerfinder). Additionally, an interactive JupyterHub server (https://mybinder.org/v2/gh/tjcadd2020/xMarkerFinder/HEAD) is also available.
+### Software setup
+#### Installation of R and R packages
+Installation of R on different platforms can be conducted following the instructions on the official website (https://www.r-project.org/). All R packages used in this protocol can be installed following given commands.
 ```
+> install.packages(Package_Name)
+```
+or
+```
+> if (!requireNamespace(“BiocManager”, quietly = TRUE)) 
+> install.packages(“BiocManager”)
+> BiocManager::install(Package_Name)
+```
+#### Installation of python and python packages
+Python can be downloaded and installed from its official website (https://www.python.org/), and all python packages could be installed using pip.
+```
+$ pip install Package_Name
+```
+#### Installation of HAllA
+HAllA can be installed according to its website (https://huttenhower.sph.harvard.edu/halla/) with the following command.
+```
+$ pip install halla
+```
+#### Installation of FastSpar
+FastSpar can be installed following its GitHub repository (https://github.com/scwatts/fastspar).
+Installation through conda:
+```
+$ conda install -c bioconda -c conda-forge fastspar
+```
+Or compiling from source code:
+```
+$ git clone https://github.com/scwatts/fastspar.git
+$ cd fastspar
+$./autogen.sh
+$./configure --prefix=/usr/
+$ make
+$ make install
+```
+#### Installation of Gephi
+Gephi could be freely downloaded and installed from its website (https://gephi.org/). 
+<img width="415" alt="image" src="https://github.com/tjcadd2020/xMarkerFinder/assets/54845977/101422c1-fb1f-4f97-8553-d447264b4d43">
+#### Docker image setup
+To provide easier implementation, we provide a Docker image to replace above Equipment setup steps excluding Gephi. Firstly, users should download and install Docker (https://docs.docker.com/engine/install/) and then setup the xMarkerFinder computational environment. All scripts in the Procedure part below should be executed within the Docker container created from the xMarkerFinder Docker image.
+
+```
+$ docker pull tjcadd2022/xmarkerfinder:1.0.14
 $ docker run -it -v $(pwd):/work tjcadd2022/xmarkerfinder:1.0.14 /bin/bash  
 ```
 ```
@@ -56,6 +105,7 @@ $ docker run -it -v $(pwd):/work tjcadd2022/xmarkerfinder:1.0.14 /bin/bash
 -v Mounts a volume between present working directory in your local machine to the /work directory in the docker container.  
 ```
 
+## User tutorial
 ### Stage 1 Differential signature identification  
 #### 1. Data normalization. 
 Convert microbial counts to relative abundance profiles of all datasets involved.  
