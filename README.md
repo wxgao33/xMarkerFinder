@@ -116,60 +116,61 @@ Users should specify these parameters or enter the default values, subsequent re
 ```
 -W the Workplace of this whole protocol  
 -p the input microbial count profile
--n the normalization method (*REL*, *AST*, *CLR*, *CSS*, *TMM*, *VST*)
+-n the normalization method (REL, AST, CLR, CSS, TMM, VST)
 -o prefix of output files
 ```  
 - Input files:  
 abundance.txt: merged microbial count profile of all datasets.  
 - Output files:  
-relative_abundance.txt: normalized relative abundance profile of input dataset. Relative abundance profiles are used as input files for all subsequent analyses, except for Step 11, which requires raw count file.  
+normalized_abundance.txt: normalized abundance profile of input dataset. Normalized abundance profiles are used as input files for all subsequent analyses, except for Step 11, which requires raw count file.  
 #### 2.	Data filtering. 
-Filter microbial signatures with low occurrence rates across cohorts.  
+Rare signatures, those with low occurrence rates across cohorts are discarded (default: prevalence below 20% of samples) to ensure that identified *biomarkers* are reproducible and could be applied to prospective cohorts.  
 ```
-$ Rscript 2_Filtering.R -W /workplace/ -m train_metadata.txt -p relative_abundance.txt -b Cohort -t 2 -o TEST  
+$ Rscript 2_Filtering.R -W /workplace/ -m train_metadata.txt -p normalized_abundance.txt -b Cohort -t 2 -o TEST  
 ```
 ```
 -m the input metadata file  
--p the input microbial relative abundance file (output file of Step 1)  
+-p the input microbial normalized abundance file (output file of Step 1)  
 -b the column name of batch(cohort) in metadata (default: Cohort)  
 -t the minimum number of cohorts where features have to occur (default: 2)  
 -O prefix of output files  
 ```
 - Input files:  
 train_metadata.txt: the clinical metadata of the training dataset.  
-relative_abundance.txt: normalized relative abundance profile of the training dataset.  
+normalized_abundance.txt: normalized abundance profile of the training dataset.  
 - Output files:  
-filtered_abundance.txt: filtered relative abundance profile of the training dataset, used as the input file for following steps.  
+filtered_abundance.txt: filtered normalized abundance profile of the training dataset, used as the input file for following steps.  
 #### 3.	Confounder analysis.   
-PERMANOVA test based on Bray-Curtis dissimilarity is performed to assess the correlation between metadata and microbial profiles and returns the coefficient of determination (R2) value and P value of every metadata index. Whichever index that contributes the most is considered as the major confounder and used later in Step 4. PCoA plot with Bray-Curtis dissimilarity is provided.  
+Inter-cohort heterogeneity caused by variance in confounders is inevitable in meta-analyses, strongly affecting downstream differential signature identification. Permutational multivariate analysis of variance (PERMANOVA) test, one of the most widely used nonparametric methods to fit multivariate models based on dissimilarity metric in microbial studies, quantifies microbial variations attributable to each metadata variable, thus assigning a delegate to evaluate confounding effects. PERMANOVA test here is performed on Bray-Curtis matrices generated using the vegan package as default. For each metadata variable, coefficient of determination (R2) value and *p* value are calculated to explain how variation is attributed. The variable with the most predominant impact on microbial profiles is treated as major batch, and other confounders are subsequently used as covariates in Step 4. Principal coordinate analysis (PCoA) plot with Bray-Curtis dissimilarity is also provided.
 ```
 $ Rscript 3_Confounder_analysis.R -W /workplace/ -m train_metadata.txt -p filtered_abundance.txt -g Group -o TEST  
 ```
 ```
 -m input metadata file  
--p input filtered microbial relative abundance file  
+-p input filtered microbial abundance file  
 -g the column name of experimental interest(group) in metadata (default: Group)  
 ```
 - Input files:  
 train_metadata.txt: the clinical metadata of the training dataset.  
-filtered_abundance.txt: filtered relative abundance profile after preprocessing.  
+filtered_abundance.txt: filtered abundance profile after preprocessing.  
 - Output files:  
 metadata_microbiota.txt: the confounding effects caused by clinical information, used to determine the major batch and covariates.  
 pcoa_plot.pdf: the PCoA plot with Bray-Curtis dissimilarity between groups.  
 #### 4.	Differential analysis.   
-Based on the major confounder and covariates found in Step 3, cross-cohort differential signature analysis is conducted.
+To identify disease or trait-associated microbial signatures across cohorts, MMUPHin is employed. Regression analyses in individual cohorts are performed using the well-validated Microbiome Multivariable Association with Linear Models (MaAsLin2) package, where multivariable associations between phenotypes, experimental groups or other metadata factors and microbial profiles are determined. These results are then aggregated with established fixed effects models to test for consistently *differential signatures* between groups with the major confounder (determined in Step 3) set as the main batch and other minor confounders (e.g., demographic indices, technical differences) as covariates. Signatures with consistently significant differences in meta-analysis are identified as cross-cohort differential signatures and used for further feature selection in subsequent stages. Users can choose from using *p* values or FDR-adjusted *p* values. Volcano plot of differential signatures is provided.
 ```
-$ Rscript 4_Differential_analysis.R -W /workplace/ -m train_metadata.txt -p filtered_abundance.txt -g Group -b Cohort -c covariates.txt -t 0.05 -o TEST
+$ Rscript 4_Differential_analysis.R -W /workplace/ -m train_metadata.txt -p filtered_abundance.txt -g Group -b Cohort -c covariates.txt -d p -t 0.05 -o TEST
 ```
 ```
 -g the column name of experimental interest(group) in metadata (default: Group)  
 -b the column name of major confounder in metadata (default: Cohort)  
--c input covariates file (tab-delimited format containing all covariates)  
--t the threshold of P value for plotting (default: 0.05)  
+-c input covariates file (tab-delimited format containing all covariates)
+-d input choice of using p values or FDR-adjusted p values(q values) (p,q)
+-t the threshold of p or q value for plotting (default: 0.05)  
 ```
 - Input files:  
 train_metadata.txt: the clinical metadata of the training dataset.  
-filtered_abundance.txt: filtered relative abundance profile after preprocessing.  
+filtered_abundance.txt: filtered abundance profile after preprocessing.  
 covariates.txt: covariates identified in Step 3 (newly generated tab-delimited file where each row is a covariate, example file is provided).  
 - Output files:  
 differential_significance_single_cohort.txt: the differential significance result in individual cohorts.  
