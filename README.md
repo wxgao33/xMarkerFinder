@@ -108,7 +108,7 @@ $ docker run -it -v $(pwd):/work tjcadd2022/xmarkerfinder:1.0.14 /bin/bash
 ## User tutorial
 ### Stage 1 Differential signature identification  
 #### 1. Data normalization. 
-To mitigate challenges induced by different number of sequencing (e.g., library size), microbial count matrices are often normalized by various computational strategies prior to downstream analyses. Here, xMarkerFinder takes the proportional normalization as its default algorithm for determining relative abundances (REL), other normalization methods are also available, including AST, CLR, CSS, TMM, and VST. 
+To mitigate challenges induced by different number of sequencing (e.g., library size), microbial count matrices are often normalized by various computational strategies prior to downstream analyses. Here, xMarkerFinder takes the proportional normalization as its default algorithm for determining relative abundances (REL), other normalization methods are also available, including AST, CLR, and TMM. 
 ```
 $ Rscript 1_Normalization.R -W /workplace/ -p abundance.txt -o TEST
 ```  
@@ -116,7 +116,7 @@ Users should specify these parameters or enter the default values, subsequent re
 ```
 -W the Workplace of this whole protocol  
 -p the input microbial count profile
--n the normalization method (REL, AST, CLR, CSS, TMM, VST)
+-n the normalization method (REL, AST, CLR, TMM)
 -o prefix of output files
 ```  
 - Input files:  
@@ -165,7 +165,7 @@ $ Rscript 4_Differential_analysis.R -W /workplace/ -m train_metadata.txt -p filt
 -g the column name of experimental interest(group) in metadata (default: Group)  
 -b the column name of major confounder in metadata (default: Cohort)  
 -c input covariates file (tab-delimited format containing all covariates)
--d input choice of using p values or FDR-adjusted p values(q values) (p,q)
+-d input choice indicating whether to use the adjusted p values rather than the raw p values and the adjusting values (F,bonf,fdr)
 -t the threshold of p or q value for plotting (default: 0.05)  
 ```
 - Input files:  
