@@ -3,7 +3,7 @@ xMarkerFinder is a four-stage workflow for microbiome research including differe
 
 ![ ](https://img.shields.io/badge/python-3.7-blue) ![GitHub top language](https://img.shields.io/github/languages/top/tjcadd2020/xMarkerFinder)  ![GitHub](https://img.shields.io/github/license/tjcadd2020/xMarkerFinder) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/tjcadd2020/xMarkerFinder)  ![GitHub issues](https://img.shields.io/github/issues/tjcadd2020/xMarkerFinder) [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/tjcadd2020/xMarkerFinder/HEAD) [![](https://img.shields.io/badge/website-CADD-lightgrey)](https://cadd.tongji.edu.cn/)  [![Snakemake](https://img.shields.io/badge/snakemake-≥5.6.0-brightgreen.svg?style=flat)](https://snakemake.readthedocs.io)
   
-![image](https://github.com/tjcadd2020/xMarkerFinder/assets/54845977/a01be325-0832-41c9-a1c6-140d1bd42325)
+<img src="https://github.com/tjcadd2020/xMarkerFinder/assets/54845977/a01be325-0832-41c9-a1c6-140d1bd42325" alt="Image" width="400">
 
 
 ## Citation
