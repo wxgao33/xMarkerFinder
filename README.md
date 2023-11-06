@@ -1,9 +1,11 @@
 # Identification and validation of microbial biomarkers from cross-cohort datasets using xMarkerFinder
-xMarkerFinder is a four-stage workflow for microbiome research including differential signature identification, model construction, model validation, and biomarker interpretation. Detailed [scripts](./scripts), [example files](./data), and a ready-to-use [docker image](https://hub.docker.com/repository/docker/tjcadd2022/xmarkerfinder) are provided. Manuscript is available at https://doi.org/10.21203/rs.3.pex-1984/v1. 
+xMarkerFinder is a four-stage workflow for microbiome research including differential signature identification, model construction, model validation, and biomarker interpretation. Detailed [scripts](./scripts), [example files](./data), and a ready-to-use [docker image](https://hub.docker.com/repository/docker/tjcadd2022/xmarkerfinder) are provided.
+We also provide a user-friendly [web server](https://www.biosino.org/xmarkerfinder/) for easier implementation. Feel free to explore the web server and discover more about xMarkerFinder!
+Manuscript is available at https://doi.org/10.21203/rs.3.pex-1984/v1. 
 
 ![ ](https://img.shields.io/badge/python-3.7-blue) ![GitHub top language](https://img.shields.io/github/languages/top/tjcadd2020/xMarkerFinder)  ![GitHub](https://img.shields.io/github/license/tjcadd2020/xMarkerFinder) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/tjcadd2020/xMarkerFinder)  ![GitHub issues](https://img.shields.io/github/issues/tjcadd2020/xMarkerFinder) [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/tjcadd2020/xMarkerFinder/HEAD) [![](https://img.shields.io/badge/website-CADD-lightgrey)](https://cadd.tongji.edu.cn/)  [![Snakemake](https://img.shields.io/badge/snakemake-≥5.6.0-brightgreen.svg?style=flat)](https://snakemake.readthedocs.io)
   
-<img src="https://github.com/tjcadd2020/xMarkerFinder/assets/54845977/a01be325-0832-41c9-a1c6-140d1bd42325" alt="Image" width="400">
+<img src="https://github.com/tjcadd2020/xMarkerFinder/assets/54845977/a01be325-0832-41c9-a1c6-140d1bd42325" alt="Image" width="200">
 
 
 ## Citation
@@ -26,6 +28,7 @@ Please cite: Wenxing Gao, Wanning Chen, Wenjing Yin et al. Identification and va
 
 
 ## Installation
+
 
 ### Hardware
 The protocol can be executed on standard computational hardware, and greater computational resources would allow for faster execution. The development and test of this protocol have been conducted on a MacBook Pro equipped with a 2.4-GHz quad-core eighth-generation Intel Core i5 processor and 16-GB 2133-MHz LPDDR3 memory.
