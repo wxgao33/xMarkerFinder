@@ -1,16 +1,22 @@
 # Identification and validation of microbial biomarkers from cross-cohort datasets using xMarkerFinder
-xMarkerFinder is a four-stage workflow for microbiome research including differential signature identification, model construction, model validation, and biomarker interpretation. Detailed [scripts](./scripts), [example files](./data), and a ready-to-use [docker image](https://hub.docker.com/repository/docker/tjcadd2022/xmarkerfinder) are provided. Manuscript is available at https://doi.org/10.21203/rs.3.pex-1984/v1. 
+xMarkerFinder is a four-stage workflow for microbiome research including differential signature identification, model construction, model validation, and biomarker interpretation. Detailed [scripts](./scripts), [example files](./data), and a ready-to-use [docker image](https://hub.docker.com/repository/docker/tjcadd2022/xmarkerfinder) are provided.
+We also provide a user-friendly [web server](https://www.biosino.org/xmarkerfinder/) for easier implementation. Feel free to explore the web server and discover more about xMarkerFinder!
+Manuscript is available at https://doi.org/10.21203/rs.3.pex-1984/v1. 
 
-![ ](https://img.shields.io/badge/python-3.7-blue) ![GitHub top language](https://img.shields.io/github/languages/top/tjcadd2020/xMarkerFinder)  ![GitHub](https://img.shields.io/github/license/tjcadd2020/xMarkerFinder) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/tjcadd2020/xMarkerFinder) [![GitHub version](https://badge.fury.io/gh/tjcadd2020%2FxMarkerFinder.svg)](https://badge.fury.io/gh/tjcadd2020%2FxMarkerFinder) ![GitHub issues](https://img.shields.io/github/issues/tjcadd2020/xMarkerFinder) [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/tjcadd2020/xMarkerFinder/HEAD) [![](https://img.shields.io/badge/website-CADD-lightgrey)](https://cadd.tongji.edu.cn/)  
+![ ](https://img.shields.io/badge/python-3.7-blue) ![GitHub top language](https://img.shields.io/github/languages/top/tjcadd2020/xMarkerFinder)  ![GitHub](https://img.shields.io/github/license/tjcadd2020/xMarkerFinder) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/tjcadd2020/xMarkerFinder)  ![GitHub issues](https://img.shields.io/github/issues/tjcadd2020/xMarkerFinder) [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/tjcadd2020/xMarkerFinder/HEAD) [![](https://img.shields.io/badge/website-CADD-lightgrey)](https://cadd.tongji.edu.cn/)  [![Snakemake](https://img.shields.io/badge/snakemake-≥5.6.0-brightgreen.svg?style=flat)](https://snakemake.readthedocs.io)
   
-<img width="400" alt="image" src="https://user-images.githubusercontent.com/54845977/188053062-dd189428-ae8d-44a4-844c-1e3d4565ff60.png">
+<img src="https://github.com/tjcadd2020/xMarkerFinder/assets/54845977/a01be325-0832-41c9-a1c6-140d1bd42325" alt="Image" width="200">
+
 
 ## Citation
 Please cite: Wenxing Gao, Wanning Chen, Wenjing Yin et al. Identification and validation of microbial biomarkers from cross-cohort datasets using xMarkerFinder, 25 August 2022, PROTOCOL (Version 1) available at Protocol Exchange [https://doi.org/10.21203/rs.3.pex-1984/v1]
 
 ## Table of Contents
-* [User Tutorial](#user-tutorial)
-  * [Environment setup](#environment-setup)
+* [Installation](#installation)
+  * [Hardware](#hardware)
+  * [Softwre](#software)
+  * [Software setup](#software-setup)
+* [User tutorial](#user-tutorial)
   * [Stage 1 Differential signature identification](#stage-1-differential-signature-identification)
   * [Stage 2 Model construction](#stage-2-model-construction)
   * [Stage 3 Model validation](#stage-3-model-validation)
@@ -21,22 +27,26 @@ Please cite: Wenxing Gao, Wanning Chen, Wenjing Yin et al. Identification and va
   * [Part III Using xMarkerFinder](#part-iii-using-xmarkerfinder)
 
 
-## User Tutorial
-### Environment setup
+## Installation
+
+
+### Hardware
+The protocol can be executed on standard computational hardware, and greater computational resources would allow for faster execution. The development and test of this protocol have been conducted on a MacBook Pro equipped with a 2.4-GHz quad-core eighth-generation Intel Core i5 processor and 16-GB 2133-MHz LPDDR3 memory.
+### Software
 - R v.3.6.1 or newer (https://www.r-project.org)
 - Python3 v3.7 or newer (https://www.python.org)
 - HAllA (https://huttenhower.sph.harvard.edu/halla)
 - FastSpar (https://github.com/scwatts/FastSpar)
 - Gephi (https://gephi.org)
 #### R packages
-- BiocManager (https://cran.r-project.org/web/packages/BiocManager) to ensure the installation of the following packages and their dependencies.
+- BiocManager (https://github.com/Bioconductor/BiocManager) to ensure the installation of the following packages and their dependencies.
 - MMUPHin (https://huttenhower.sph.harvard.edu/mmuphin)
-- dplyr (https://cran.r-project.org/web/packages/dplyr)
-- vegan (https://cran.r-project.org/web/packages/vegan/)
-- XICOR (https://cran.r-project.org/web/packages/XICOR/)
-- eva (https://cran.r-project.org/web/packages/eva/)
-- labdsv (https://cran.r-project.org/web/packages/labdsv/)
-- Boruta (https://cran.r-project.org/web/packages/Boruta/, optional)
+- dplyr (https://dplyr.tidyverse.org/)
+- vegan (https://github.com/vegandevs/vegan)
+- XICOR (https://github.com/cran/XICOR)
+- eva (https://github.com/brianbader/eva_package)
+- labdsv (https://github.com/cran/labdsv)
+- Boruta (https://gitlab.com/mbq/Boruta, optional)
 #### python packages
 - pandas (https://pandas.pydata.org)
 - NumPy (https://numpy.org/)
@@ -46,79 +56,127 @@ Please cite: Wenxing Gao, Wanning Chen, Wenjing Yin et al. Identification and va
 - Matplotlib (https://matplotlib.org/)
 - seaborn (https://seaborn.pydata.org/)
 #### Docker image
-
 Above software list provides the minimal requirements for the complete execution of xMarkerFinder locally. Alternatively, we provide a ready-to-use Docker image, enabling users to skip the software installation and environment setup (https://hub.docker.com/r/tjcadd2022/xmarkerfinder). Additionally, an interactive JupyterHub server (https://mybinder.org/v2/gh/tjcadd2020/xMarkerFinder/HEAD) is also available.
+### Software setup
+#### Installation of R and R packages
+Installation of R on different platforms can be conducted following the instructions on the official website (https://www.r-project.org/). All R packages used in this protocol can be installed following given commands.
 ```
-$ docker run -it -v $(pwd):/work tjcadd2022/xmarkerfinder:1.0.14 /bin/bash  
+> install.packages(Package_Name)
+```
+or
+```
+> if (!requireNamespace(“BiocManager”, quietly = TRUE)) 
+> install.packages(“BiocManager”)
+> BiocManager::install(Package_Name)
+```
+#### Installation of python and python packages
+Python can be downloaded and installed from its official website (https://www.python.org/), and all python packages could be installed using pip.
+```
+$ pip install Package_Name
+```
+#### Installation of HAllA
+HAllA can be installed according to its website (https://huttenhower.sph.harvard.edu/halla/) with the following command.
+```
+$ pip install halla
+```
+#### Installation of FastSpar
+FastSpar can be installed following its GitHub repository (https://github.com/scwatts/fastspar).
+Installation through conda:
+```
+$ conda install -c bioconda -c conda-forge fastspar
+```
+Or compiling from source code:
+```
+$ git clone https://github.com/scwatts/fastspar.git
+$ cd fastspar
+$./autogen.sh
+$./configure --prefix=/usr/
+$ make
+$ make install
+```
+#### Installation of Gephi
+Gephi could be freely downloaded and installed from its website (https://gephi.org/). 
+<img width="415" alt="image" src="https://github.com/tjcadd2020/xMarkerFinder/assets/54845977/101422c1-fb1f-4f97-8553-d447264b4d43">
+#### Docker image setup
+To provide easier implementation, we provide a Docker image to replace above Equipment setup steps excluding Gephi. Firstly, users should download and install Docker (https://docs.docker.com/engine/install/) and then setup the xMarkerFinder computational environment. All scripts in the Procedure part below should be executed within the Docker container created from the xMarkerFinder Docker image.
+
+```
+$ docker pull tjcadd2022/xmarkerfinder:1.0.16
+$ docker run -it -v $(pwd):/work tjcadd2022/xmarkerfinder:1.0.16 /bin/bash  
 ```
 ```
 -it Run containers in an interactive mode, allowing users to execute commands and access files within the docker container.  
 -v Mounts a volume between present working directory in your local machine to the /work directory in the docker container.  
 ```
 
+## User tutorial
 ### Stage 1 Differential signature identification  
 #### 1. Data normalization. 
-Convert microbial counts to relative abundance profiles of all datasets involved.  
+To mitigate challenges induced by different number of sequencing (e.g., library size), microbial count matrices are often normalized by various computational strategies prior to downstream analyses. Here, xMarkerFinder takes the proportional normalization as its default algorithm for determining relative abundances (REL), other normalization methods are also available, including AST, CLR, and TMM. 
 ```
 $ Rscript 1_Normalization.R -W /workplace/ -p abundance.txt -o TEST
 ```  
 Users should specify these parameters or enter the default values, subsequent repetitions of which are not listed.   
 ```
 -W the Workplace of this whole protocol  
--p the input microbial count profile  
+-p the input microbial count profile
+-m the normalization method (REL, AST, CLR, TMM)
 -o prefix of output files
 ```  
 - Input files:  
 abundance.txt: merged microbial count profile of all datasets.  
 - Output files:  
-relative_abundance.txt: normalized relative abundance profile of input dataset. Relative abundance profiles are used as input files for all subsequent analyses, except for Step 11, which requires raw count file.  
+normalized_abundance.txt: normalized abundance profile of input dataset. Normalized abundance profiles are used as input files for all subsequent analyses, except for Step 11, which requires raw count file.  
 #### 2.	Data filtering. 
-Filter microbial signatures with low occurrence rates across cohorts.  
+Rare signatures, those with low occurrence rates across cohorts are discarded (default: prevalence below 20% of samples) to ensure that identified *biomarkers* are reproducible and could be applied to prospective cohorts.  
 ```
-$ Rscript 2_Filtering.R -W /workplace/ -m train_metadata.txt -p relative_abundance.txt -b Cohort -t 2 -o TEST  
+$ Rscript 2_Filtering.R -W /workplace/ -m train_metadata.txt -p normalized_abundance.txt -b Cohort -t 2 -o TEST  
 ```
 ```
 -m the input metadata file  
--p the input microbial relative abundance file (output file of Step 1)  
+-p the input microbial normalized abundance file (output file of Step 1)  
 -b the column name of batch(cohort) in metadata (default: Cohort)  
 -t the minimum number of cohorts where features have to occur (default: 2)  
 -O prefix of output files  
 ```
 - Input files:  
 train_metadata.txt: the clinical metadata of the training dataset.  
-relative_abundance.txt: normalized relative abundance profile of the training dataset.  
+normalized_abundance.txt: normalized abundance profile of the training dataset.  
 - Output files:  
-filtered_abundance.txt: filtered relative abundance profile of the training dataset, used as the input file for following steps.  
+filtered_abundance.txt: filtered normalized abundance profile of the training dataset, used as the input file for following steps.  
 #### 3.	Confounder analysis.   
-PERMANOVA test based on Bray-Curtis dissimilarity is performed to assess the correlation between metadata and microbial profiles and returns the coefficient of determination (R2) value and P value of every metadata index. Whichever index that contributes the most is considered as the major confounder and used later in Step 4. PCoA plot with Bray-Curtis dissimilarity is provided.  
+Inter-cohort heterogeneity caused by variance in confounders is inevitable in meta-analyses, strongly affecting downstream differential signature identification. Permutational multivariate analysis of variance (PERMANOVA) test, one of the most widely used nonparametric methods to fit multivariate models based on dissimilarity metric in microbial studies, quantifies microbial variations attributable to each metadata variable, thus assigning a delegate to evaluate confounding effects. PERMANOVA test here is performed on Bray-Curtis (recommended for REL and TMM normalized data) or Eucledian (recommended for AST and CLR normalized data) dissimilarity matrices. For each metadata variable, coefficient of determination (R2) value and *p* value are calculated to explain how variation is attributed. The variable with the most predominant impact on microbial profiles is treated as major batch, and other confounders are subsequently used as covariates in Step 4. Principal coordinate analysis (PCoA) plot is also provided.
 ```
-$ Rscript 3_Confounder_analysis.R -W /workplace/ -m train_metadata.txt -p filtered_abundance.txt -g Group -o TEST  
+$ Rscript 3_Confounder_analysis.R -W /workplace/ -m train_metadata.txt -p filtered_abundance.txt -d bc -c 999 -g Group -o TEST  
 ```
 ```
 -m input metadata file  
--p input filtered microbial relative abundance file  
+-p input filtered microbial abundance file
+-d distance matrix (bc, euclidean)
+-c permutation count (default: 999)
 -g the column name of experimental interest(group) in metadata (default: Group)  
 ```
 - Input files:  
 train_metadata.txt: the clinical metadata of the training dataset.  
-filtered_abundance.txt: filtered relative abundance profile after preprocessing.  
+filtered_abundance.txt: filtered abundance profile after preprocessing.  
 - Output files:  
 metadata_microbiota.txt: the confounding effects caused by clinical information, used to determine the major batch and covariates.  
 pcoa_plot.pdf: the PCoA plot with Bray-Curtis dissimilarity between groups.  
 #### 4.	Differential analysis.   
-Based on the major confounder and covariates found in Step 3, cross-cohort differential signature analysis is conducted.
+To identify disease or trait-associated microbial signatures across cohorts, MMUPHin is employed. Regression analyses in individual cohorts are performed using the well-validated Microbiome Multivariable Association with Linear Models (MaAsLin2) package, where multivariable associations between phenotypes, experimental groups or other metadata factors and microbial profiles are determined. These results are then aggregated with established fixed effects models to test for consistently *differential signatures* between groups with the major confounder (determined in Step 3) set as the main batch and other minor confounders (e.g., demographic indices, technical differences) as covariates. Signatures with consistently significant differences in meta-analysis are identified as cross-cohort differential signatures and used for further feature selection in subsequent stages. Users can choose from using *p* values or adjusted *p* values. Volcano plot of differential signatures is provided.
 ```
-$ Rscript 4_Differential_analysis.R -W /workplace/ -m train_metadata.txt -p filtered_abundance.txt -g Group -b Cohort -c covariates.txt -t 0.05 -o TEST
+$ Rscript 4_Differential_analysis.R -W /workplace/ -m train_metadata.txt -p filtered_abundance.txt -g Group -b Cohort -c covariates.txt -d p -t 0.05 -o TEST
 ```
 ```
 -g the column name of experimental interest(group) in metadata (default: Group)  
 -b the column name of major confounder in metadata (default: Cohort)  
--c input covariates file (tab-delimited format containing all covariates)  
--t the threshold of P value for plotting (default: 0.05)  
+-c input covariates file (tab-delimited format containing all covariates)
+-d input choice indicating whether to use the adjusted p values rather than the raw p values and the adjusting values (F,bonf,fdr)
+-t the threshold of p or q value for plotting (default: 0.05)  
 ```
 - Input files:  
 train_metadata.txt: the clinical metadata of the training dataset.  
-filtered_abundance.txt: filtered relative abundance profile after preprocessing.  
+filtered_abundance.txt: filtered abundance profile after preprocessing.  
 covariates.txt: covariates identified in Step 3 (newly generated tab-delimited file where each row is a covariate, example file is provided).  
 - Output files:  
 differential_significance_single_cohort.txt: the differential significance result in individual cohorts.  
@@ -127,12 +185,12 @@ differential_signature.txt: significantly *differential signatures* between grou
 differential_volcano.pdf: the volcano plot of input differential significance file.     
 ### Stage 2 Model construction
 #### 5.	Classifier selection.   
-This step provides optional classifier selection for subsequent steps where the performances of every ML algorithm are generally assessed using all *differential signatures*. The output file contains the cross-validation AUC, specificity, sensitivity, accuracy, precision and F1 score of all classification models built with these various algorithms. Users should specify the selected classifier in all following steps.
+This step provides optional classifier selection for subsequent steps where the performances of every ML algorithm are generally assessed using all *differential signatures*. The output file contains the cross-validation AUC, AUPR, MCC, specificity, sensitivity, accuracy, precision, and F1 score of all classification models built with these various algorithms. Users should specify the selected classifier in all the following steps.
 differential_signature.txt: significantly differential signatures between groups derived from input filtered profiles, used as input files for feature selection.  
 differential_volcano.pdf: the volcano plot of input differential significance file.     
 ### Stage 2 Model construction
 #### 5.	Classifier selection.   
-This step provides optional classifier selection for subsequent steps where the performances of every ML algorithm are generally assessed using all differential signatures. The output file contains the cross-validation AUC, specificity, sensitivity, accuracy, precision and F1 score of all classification models built with these various algorithms. Users should specify the selected classifier in all following steps.
+This step provides optional classifier selection for subsequent steps where the performances of every ML algorithm are generally assessed using all differential signatures. The output file contains the cross-validation AUC, AUPR, MCC, specificity, sensitivity, accuracy, precision, and F1 score of all classification models built with these various algorithms. Users should specify the selected classifier in all the following steps.
 ```
 $ python 5_Classifier_selection.py -W /workplace/ -m train_metadata.txt -p differential_signature.txt -g Group -e exposure -s 0 -o TEST
 ```
@@ -229,7 +287,7 @@ As stated above, this step provides extensive internal validations to ensure the
 $ python 8_Validation.py -W /workplace/ -m metadata.txt -p candidate_biomarker.txt -g Group -e exposure -b Cohort -c classifier -s 0 -o TEST
 ```
 ```
--p input optimal candidate marker file (output file of Step 9 or Step 10)
+-p input optimal candidate marker file (output file of Step 6)
 ```
 - Input files:  
 metadata.txt: the clinical metadata of the training dataset.  
@@ -246,7 +304,7 @@ $ python 9a_Test.py -W /workplace/ -m train_metadata.txt -p candidate_biomarker.
 ```
 -a input external metadata file for the test dataset
 -x input external microbial relative abundance file as the test dataset
--r input optimal hyperparameter file (output file of Step 11)
+-r input optimal hyperparameter file (output file of Step 7)
 ```
 - Input files:  
 train_metadata.txt: the clinical metadata of the training dataset.  
@@ -256,14 +314,16 @@ test_profile.txt: the relative abundance matrix of the external test dataset.
 - Output files:  
 test_result.txt: the overall performance of model in external test dataset.  
 test_auc.pdf: the visualization of the AUC value in test_result.txt.  
-##### 9b.	Specificity assessment.   
-To further assess markers’ specificity for experimental group of interest, they are used to construct classification models to discriminate between other related diseases and corresponding controls. Cross-validation AUC values of other classification models and visualization are returned.   
+##### 9b.	Biomarker specificity assessment.   
+To further assess markers’ specificity for the experimental group of interest, they are used to construct classification models to discriminate between other related diseases and corresponding controls. Cross-validation AUC values of other classification models and visualization are returned.   
 ```
-$ python 9b_Specificity.py -W /workplace/ -p candidate_biomarker.txt -a other_metadata.txt -x other_profile.txt -g Group -e exposure -b Cohort -c classifier -r best_param.txt -s 0 -o TEST
+$ python 9b_Specificity.py -W /workplace/ -p candidate_biomarker.txt -q test_metadata.txt -l test_relative_abundance.txt -a other_metadata.txt -x other_relative_abundance.txt -g Group -e CTR -b Cohort -c classifier -r best_param.txt -s 0 -o TEST
 ```
 ```
--a input metadata file of samples from other diseases
--x input microbial relative abundance file of samples from other diseases
+-q input external test metadata file for the test dataset
+-l input external microbial relative abundance file as the test dataset
+-a input metadata file of samples from other non-target diseases
+-x input microbial relative abundance file of samples from other non-target diseases
 -e the control group name (in example file: CTR)
 -b the column name of cohort(in example file: Cohort)
 ```
@@ -274,16 +334,16 @@ other_profile.txt: the relative abundance matrix of other diseases.
 - Output files:  
 specificity_result.txt: AUC values of models constructed with *candidate biomarkers* in other related diseases.  
 specificity_auc.pdf: the visualization of the specificity_result.txt.  
-##### 9b*.	Alternative specificity assessment.   
-Random samples of case and control class of other diseases are added into the classification model, respectively, both labelled as “control”, the variations of corresponding AUCs of which are calculated used for visualization.   
+##### 9c.	Model specificity assessment.   
+Random samples of case and control class of other diseases are added into the classification model, respectively, both labeled as “control”, the variations of corresponding AUCs of which are calculated and used for visualization.   
 ```
-$ python alt_9b_Specificity_add.py -W /workplace/ -m train_metadata.txt -p candidate_biomarker.txt -q test_metadata.txt -l test_profile.txt -a other_metadata.txt -x other_profile.txt -g Group -e exposure -b Cohort -c classifier -r hyperparamter.txt -n 5 -s 0 -o TEST
+$ python 9c_Specificity_add.py -W /workplace/ -m train_metadata.txt -p candidate_biomarker.txt -q test_metadata.txt -l test_profile.txt -a other_metadata.txt -x other_profile.txt -g Group -e exposure -b Cohort -c classifier -r hyperparamter.txt -n 5 -s 0 -o TEST
 ```
 ```
 -q input external metadata file for the test dataset
 -l input external microbial relative abundance file as the test dataset
 -a input metadata file of samples from other diseases
--x input microbial relative abundance file of samples from other diseases
+-x input microbial relative abundance file of samples from other non-target diseases
 -e the control group name (in example file: CTR)
 -b the column name of cohort(dataset)
 -n the number of samples to add into the model each time 
@@ -293,10 +353,10 @@ train_metadata.txt: the clinical metadata of the training dataset.
 candidate_biomarker.txt: the optimal panel of *candidate markers*.  
 test_metadata.txt: the clinical metadata of the external test dataset.  
 test_profile.txt: the relative abundance matrix of the external test dataset.  
-other_metadata.txt: the clinical metadata of samples for other diseases.  
-other_profile.txt: the relative abundance matrix of other diseases.  
+other_metadata.txt: the clinical metadata of samples for other non-target diseases.  
+other_profile.txt: the relative abundance matrix of other non-target diseases.  
 - Output files:  
-specificity_add_result.txt: AUC values of models constructed with candidate markers in other related diseases.  
+specificity_add_result.txt: AUC values of models constructed with candidate markers in other non-target diseases.  
 specificity_add_auc.pdf: the visualization of the specificity_result.txt.  
 ### Stage 4 Biomarker interpretation.
 #### 10.	Biomarker importance.
@@ -307,6 +367,7 @@ $ python 10_Biomarker_importance.py -W /workplace/ -m train_metadata.txt -p cand
 ```
 -p input candidate biomarkers (output file of Step 6)
 -r input optimal hyperparameter file (output file of Step 7)
+-n input number for biomarker abundance visualization
 ```
 - Input files:  
 train_metadata.txt: the clinical metadata of the training dataset.  
@@ -314,8 +375,9 @@ candidate_biomarker.txt: the optimal panel of *candidate biomarkers*.
 best_param.txt: the best hyperparameter combination of classification model.  
 - Output files:  
 biomarker_importance.txt: permutation feature importance of *candidate biomarkers* via ten permutations.  
-biomarker_importance.pdf: the visualization of feature importance file.   
-#### 11.	Microbial co-occurrence network.   
+biomarker_importance.pdf: the visualization of feature importance file.
+Biomarker_distribution.pdf: the visualization for the abundances of the top n (set by users) important biomarkers in the discovery dataset.
+#### 11.	Microbial co-occurrence network.  
 Inter-microbiota correlation is calculated using FastSpar with 50 iterations and the output files contain the correlation and p value between each microbiota pair.   
 ##### 11a. Convert.
 As the input file for Step 11b needs to be microbial count profile in .tsv format where each row describes a microbial signature and each column represents a sample (could be converted profiles of all features, *differential signatures*, or *candidate biomarkers* according to users’ need, and null values needed to be set as 0) and header needs to start with “#OTU ID”, an additional file conversion script is provided.  
@@ -369,11 +431,11 @@ microbial_network.csv: adjusted network profile for Gephi input, only significan
 
 (iv)  Choose a preferable layout type to form the basic network and press the “stop” button when the network becomes stable (Fruchterman Reingold style is recommended).    
 <img width="415" alt="image" src="https://user-images.githubusercontent.com/54845977/171319813-0fed579e-6c7d-4581-bf7e-174aa8d391e1.png">   
-(v)  For further optimization of the network, appearances of nodes and edges should be adjusted according to users’ need, as well as the labels of nodes.  
+(v)  For further optimization of the network, the appearances of nodes and edges should be adjusted according to users’ needs, as well as the labels of nodes.  
 <img width="415" alt="image" src="https://user-images.githubusercontent.com/54845977/171319835-a572168e-fad4-47d0-a03b-16b528c99d54.png">    
 
 #### 12.	Multi-omics correlation. 
-If users have multi-omics or multidimensional microbial profiles of the same dataset, the correlation between different omics or dimensions are calculated via HAllA.
+If users have multi-omics or multidimensional microbial profiles of the same dataset, the correlation between different omics or dimensions is calculated via HAllA.
 ```
 $ ./12_Multi_omics_correlation.sh -W /workplace/ -i microbial_abundance_1.txt -d microbial_abundance_2.txt -o TEST
 ```
@@ -395,14 +457,14 @@ results/hallagram.png: the visualization of all_associations.txt with only signi
 ## FAQs
 ### Part I General questions
 #### 1. When should I use xMarkerFinder?  
-xMarkerFinder is suitable for microbial biomarker identification from cross-cohort datasets. Our previous studies demonstrated its applicability in identifying global microbial diagnostic biomarkers for adenoma and colorectal cancer. Moreover, xMarkerFinder could also be applied to biomarker determination in disease prognosis, treatment stratification, metastasis surveillance, adverse reactions anticipation, etc. Any research dedicated to biomarker identification from multi-population microbial datasets are welcome.
-#### 2. How should I setup the required computational environment for xMarkerFinder?  
-We provide detailed instructions on software installation for users to run the whole xMarkerFinder workflow locally. However, we strongly encourage the usage of provided docker image as it would significantly reduce potential errors in the entire installation and setup process. (https://hub.docker.com/r/tjcadd2022/xmarkerfinder)
+xMarkerFinder is suitable for microbial biomarker identification from cross-cohort datasets. Our previous studies demonstrated its applicability in identifying global microbial diagnostic biomarkers for adenoma and colorectal cancer. Moreover, xMarkerFinder could also be applied to biomarker determination in disease prognosis, treatment stratification, metastasis surveillance, adverse reactions anticipation, etc. Any research dedicated to biomarker identification from multi-population microbial datasets is welcome.
+#### 2. How should I set up the required computational environment for xMarkerFinder?  
+We provide detailed instructions on software installation for users to run the whole xMarkerFinder workflow locally. However, we strongly encourage the usage of the provided docker image as it would significantly reduce potential errors in the entire installation and setup process. (https://hub.docker.com/r/tjcadd2022/xmarkerfinder)
 #### 3. Can I access and modify the codes used in xMarkerFinder?  
 Yes. The [codes](./scripts) used in xMarkerFinder are deposited in our GitHub repository and can be freely downloaded and modified according to users’ specific needs. However, the modification might cause unprecedented errors and we encourage users to try different parameters first, and then modify the codes.
 #### 4. Can I use only certain steps of xMarkerFinder and skip other parts?  
 Yes. The whole xMarkerFinder workflow contains four stages (12 steps) and every stage/step can be conducted independently and users could skip any one of them according to specific study designs.
-#### 5. Can I use xMarkerFinder on environmental microbiome researches?  
+#### 5. Can I use xMarkerFinder for environmental microbiome research?  
 Yes. Although xMarkerFinder is developed for human microbiome studies, it is also generalizable to other microbial habitats. 
 #### 6. How long does it take to run xMarkerFinder?  
 The time needed for the whole workflow depends on the dataset size, selected algorithm, and computational resources available. The following time estimates are based on execution of our protocol on provided example datasets with all classifiers (Logistic Regression (LR, L1 and L2 regularization), K-nearest Neighbors (KNN) classifier, Support Vector classifier (SVC) with the Radial Basis Function kernel), Decision Tree (DT) classifier, Random Forest(RF) classifier, and Gradient Boosting (GB) classifier using the xMarkerFinder docker image on a MacBook Pro (2.4-GHz quad-core eighth-generation Intel Core i5 processor, 16-GB 2133-MHz LPDDR3 memory).  
@@ -431,25 +493,25 @@ The time needed for the whole workflow depends on the dataset size, selected alg
 |                                                             |     Total    |     14m33.085s    |     14m33.414s    |     14m46.561s    |     14m51.624s    |     14m33.856s    |     15m16.080s     |     14m34.843s     |
 |     Total                                                   |     /        |     47m25.417s    |     47m47.842s    |     65m1.221s     |     49m56.698s    |     48m23.779s    |     168m52.065s    |     166m15.659s    |
 #### 7. What skills are required to run xMarkerFinder?  
-Preliminary understanding of shell scripts would allow users to complete the whole workflow. Intermediate experience of R and python would facilitate users to better interpret and modify the codes.
+A preliminary understanding of shell scripts would allow users to complete the whole workflow. Intermediate experience in R and Python would facilitate users to interpret and modify the codes.
 #### 8. Is xMarkerFinder a pipeline for meta-analysis?  
 Yes. xMarkerFinder aims to integrate different datasets and establish replicable biomarkers. However, xMarkerFinder differs from systematic review as it integrates original datasets instead of the respective results.
 ### Part II Data processing
 #### 1.	What kind of data should I use for xMarkerFinder?
-Processed microbial count matrices and corresponding metadata are required. For cross-cohort analysis, we require merged datasets from at least three cohorts in the dicovery set to accomplish the full protocol with internal validations. xMarkerFinder is well adapted to microbial taxonomic and functional profiles derived from both amplicon and whole metagenomics sequencing data, as well as other omics layers, including but not limited to metatranscriptomics, metaproteomics, and metabolomics.
+Processed microbial count matrices and corresponding metadata are required. For cross-cohort analysis, we require merged datasets from at least three cohorts in the discovery set to accomplish the full protocol with internal validations. xMarkerFinder is well adapted to microbial taxonomic and functional profiles derived from both amplicon and whole metagenomics sequencing data, as well as other omics layers, including but not limited to metatranscriptomics, metaproteomics, and metabolomics.
 #### 2. If I don’t have the corresponding metadata, can I still use xMarkerFinder?
-To perform meta-analysis, corresponding sample groups are required. Other metadata indices, such as body mass index, age and gender are recommended but not necessary. However, it is worth noticing that the absence of metadata information might compromise the correction for confounding effects and the identification of microbial biomarkers.  
+To perform meta-analysis, corresponding sample groups are required. Other metadata indices, such as body mass index, age, and gender are recommended but unnecessary. However, it is worth noticing that the absence of metadata information might compromise the correction for confounding effects and the identification of microbial biomarkers.  
 #### 3.	Why should I normalize my data?
-To mitigate challenges induced by different number of sequencing (e.g. library sizes), microbial count profiles are converted to relative abundances for subsequent analysis in xMarkerFinder.
+To mitigate challenges induced by different numbers of sequencing (e.g. library sizes), microbial count profiles are converted to relative abundances for subsequent analysis in xMarkerFinder.
 #### 4.	Why should I perform data filtering?
 To identify a replicable panel of microbial biomarkers, we need to exclude rare microbial features, those with low occurrence rates across cohorts as they are not ideal candidates as global biomarkers.
 #### 5.	What does the training and test set do and why should I separate them?
-To ensure models’ reliability, datasets are split to training/discovery and test set. Training set is used to train and have the model learn the hidden pattern. Test set is used to test the model after completing the training process and provides unbiased final model performance results.  
+To ensure models’ reliability, datasets are split into training/discovery and test sets. The training set is used to train and have the model learn the hidden pattern. The test set is used to test the model after completing the training process and provides unbiased final model performance results.  
 ### Part III Using xMarkerFinder
 #### 1.	How to solve installation errors?
-Potential installation problems and solutions are provided along in our manuscript, and most problems would be avoided by simply using the docker image we provided instead of running all scripts locally (https://hub.docker.com/r/tjcadd2022/xmarkerfinder).
+Potential installation problems and solutions are provided in our manuscript, and most problems would be avoided by simply using the docker image we provided instead of running all scripts locally (https://hub.docker.com/r/tjcadd2022/xmarkerfinder).
 #### 2.	What machine learning classifier should I choose?
-Step 5 provides the evaluation of multiple commonly used algorithms in machine learning, and users could choose the most suitable algorithm based on these results. However, due to its robustness and interpretability, Random Forest classifiers are considered suitable for most microbiome datasets. Therefore, step 5 is not compulsory and we recommend users to build Random Forest models first, move to other classifiers if they underperform.
+Step 5 provides the evaluation of multiple commonly used algorithms in machine learning, and users could choose the most suitable algorithm based on these results. However, due to its robustness and interpretability, Random Forest classifiers are considered suitable for most microbiome datasets. Therefore, step 5 is not compulsory and we recommend users to build Random Forest models first, and move to other classifiers if they underperform.
 #### 3.	How to choose suitable parameters when running xMarkerFinder?
 For most scenarios, the default parameters would work. For further exploration, users are encouraged to try different parameters to get better results.
 #### 4.	What is an AUC and how to interpret it?

@@ -12,6 +12,7 @@ from numpy import interp
 import matplotlib.pyplot as plt
 import argparse
 import seaborn as sns
+from scipy.stats import wilcoxon
 from mpl_toolkits.axes_grid1 import ImageGrid
 
 
@@ -19,7 +20,7 @@ plt.rcParams['pdf.fonttype'] = 42
 plt.rcParams['ps.fonttype'] = 42
 
 #import data
-parser = argparse.ArgumentParser(description = "Alternative specificity assessment & plot")
+parser = argparse.ArgumentParser(description = "Model specificity assessment & plot")
 parser.add_argument('--Workplace','-W',help = 'Workplace : Input and output work place')
 parser.add_argument('--metadata','-m',help = 'input file : training set metadata')
 parser.add_argument('--profile','-p',help = 'input file : optimal biomarkers')
@@ -135,12 +136,52 @@ for i in cases:
 auc_comparison.to_csv(args.Workplace+args.output+"_specificity_add_result.txt", sep = '\t')
 
 #fig = plt.figure(figsize=(8,6))
-fig = sns.set_theme(style="white")
-fig = sns.boxplot(data = auc_comparison)
-fig = sns.swarmplot(data = auc_comparison)
-fig.set_ylabel('AUC')
-fig.set_xticklabels(auc_comparison.columns,rotation=30)
+#fig = sns.set_theme(style="white")
+#fig = sns.boxplot(data = auc_comparison)
+#fig = sns.swarmplot(data = auc_comparison)
+#fig.set_ylabel('AUC')
+#fig.set_xticklabels(auc_comparison.columns,rotation=30)
+#fig.set_title("Model specificity assessment", fontsize=20, fontweight='bold', pad=20)
+
+p_values = []
+pairs = list(range(0, len(auc_comparison.columns) - 1, 2))  # [0, 2, 4, ...]
+
+for i in pairs:
+    _, p_val = wilcoxon(auc_comparison.iloc[:, i], auc_comparison.iloc[:, i+1])
+    p_values.append(p_val)
+
+significance_markers = []
+for p in p_values:
+    if p < 0.001:
+        significance_markers.append('***')
+    elif p < 0.01:
+        significance_markers.append('**')
+    elif p < 0.05:
+        significance_markers.append('*')
+    else:
+        significance_markers.append('ns')  # 不显著
+
+sns.set_theme(style="white")
+fig, ax = plt.subplots(figsize=(10, 6))
+sns.boxplot(data=auc_comparison, ax=ax)
+sns.swarmplot(data=auc_comparison, ax=ax, color=".25")
+
+ax.set_ylabel('AUC')
+ax.set_xticklabels(auc_comparison.columns)
+ax.set_title("Biomarker specificity assessment", fontsize=20, fontweight='bold', pad=20)
+
+
+y_max = auc_comparison.max().max()  
+
+for idx, marker in enumerate(significance_markers):
+    y_text = y_max + 0.02 #+ idx*0.02  
+    x1, x2 = pairs[idx], pairs[idx] + 1
+    ax.plot([x1, x1, x2, x2], [y_text-0.01, y_text, y_text, y_text-0.01], lw=1.5, color='black')
+    ax.text((x1+x2)*.5, y_text, marker, ha='center', va='center', color='black', fontsize=15)
+
+
 #plt.tight_layout()
 plt.savefig(args.Workplace+args.output+'_specificity_add_auc.pdf',bbox_inches = 'tight')
+plt.savefig(args.Workplace+args.output+'_specificity_add_auc.svg',bbox_inches = 'tight',format = 'svg')
 
 print("FINISH")

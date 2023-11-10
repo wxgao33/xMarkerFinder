@@ -10,7 +10,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.svm import SVC,LinearSVC
-from sklearn.metrics import roc_curve,auc,recall_score,precision_score,f1_score,accuracy_score,roc_auc_score
+from sklearn.metrics import roc_curve,auc,recall_score,precision_score,precision_recall_curve,f1_score,accuracy_score,roc_auc_score,matthews_corrcoef
 from bayes_opt import BayesianOptimization, UtilityFunction 
 from scipy import interp
 import seaborn as sns
@@ -75,7 +75,7 @@ class machine_learning:
         mean_auc = auc(mean_fpr, mean_tpr)
         return mean_auc
 
-    def bayesian_optimise_rf(self,X, y, clf_kfold,k_fold, n_iter = 100, init_points = 5):
+    def bayesian_optimise_rf(self,X, y, clf_kfold,k_fold, n_iter = 50, init_points = 5):
         def rf_crossval(n_estimators, max_features,max_depth,max_samples):
             return clf_kfold(
                 data = X,
@@ -148,7 +148,7 @@ class machine_learning:
         print("Final result:", optimizer.max)
         return optimizer.max
 
-    def bayesian_optimise_dt(self,X, y, clf_kfold,k_fold, n_iter = 100, init_points = 5):
+    def bayesian_optimise_dt(self,X, y, clf_kfold,k_fold, n_iter = 50, init_points = 5):
         def dt_crossval(min_samples_leaf,max_depth,min_samples_split):
             return clf_kfold(
                 data = X,
@@ -172,7 +172,7 @@ class machine_learning:
         print("Final result:", optimizer.max)
         return optimizer.max
 
-    def bayesian_optimise_gb(self,X, y, clf_kfold,k_fold, n_iter = 100, init_points = 5):
+    def bayesian_optimise_gb(self,X, y, clf_kfold,k_fold, n_iter = 50, init_points = 5):
         def gb_crossval(n_estimators,learning_rate,subsample,max_depth,max_features):
             return clf_kfold(
                 data = X,
@@ -222,7 +222,7 @@ class machine_learning:
         print("Final result:", optimizer.max)
         return optimizer.max
 
-    def bayesian_optimise_kn(self,X, y, clf_kfold,k_fold, n_iter = 100, init_points = 5):
+    def bayesian_optimise_kn(self,X, y, clf_kfold,k_fold, n_iter = 50, init_points = 5):
         def kn_crossval(n_neighbors):
             return clf_kfold(
                 data = X,
@@ -255,6 +255,8 @@ class machine_learning:
         pres = []
         f1s = []
         accus = []
+        mccs = []
+        auprs = []        
         splitor = StratifiedKFold(n_splits=k_fold, shuffle=True,random_state=RANDOM_SEED) 
         clf = self.Method[opt_clf].set_params(**params)
         
@@ -273,7 +275,10 @@ class machine_learning:
             FN = ((pred==0) & (y_test==1)).sum()
             spe = TN / float(FP + TN)
             spes.append(spe)
-            
+
+            precision, recall, _ = precision_recall_curve(y_test,pred)
+            aupr = auc(recall,precision)
+            auprs.append(aupr)            
             pre = precision_score(y_test, pred)
             pres.append(pre)
             f1 = f1_score(y_test, pred)
@@ -281,6 +286,8 @@ class machine_learning:
             fpr, tpr, thresholds = roc_curve(y_test, probas[:, 1])
             roc_auc = auc(fpr, tpr)
             spes.append(spe)
+            mcc = matthews_corrcoef(y_test,pred)
+            mccs.append(mcc)
             aucs.append(roc_auc)
             accu = accuracy_score(y_test, pred)
             accus.append(accu)
@@ -299,8 +306,10 @@ class machine_learning:
         mean_pre = np.mean(pres)
         mean_f1 = np.mean(f1s)
         mean_accu = np.mean(accus)
-        
-        return clf, mean_auc,mean_spe,mean_sen,mean_pre,mean_f1,mean_accu,(plot_data, mean_fpr, mean_tpr, tprs,aucs, np.std(aucs))
+        mean_aupr = np.mean(auprs)
+        mean_mcc = np.mean(mccs)
+
+        return clf, mean_auc,mean_aupr,mean_mcc,mean_spe,mean_sen,mean_pre,mean_f1,mean_accu,(plot_data, mean_fpr, mean_tpr, tprs,aucs, np.std(aucs))
 
     def internal_eval(self,X_train,X_test,y_train,y_test,params):
         clf = self.Method[opt_clf].set_params(**params).fit(X_train,y_train)
@@ -309,6 +318,9 @@ class machine_learning:
         fpr, tpr, thresholds = roc_curve(y_test, probas[:, 1])
         roc_auc = auc(fpr, tpr)
         sen = recall_score(y_test,pred)
+        precision, recall, _ = precision_recall_curve(y_test,pred)
+        aupr = auc(recall,precision)
+        mcc = matthews_corrcoef(y_test,pred)
         TP = ((pred==1) & (y_test==1)).sum()
         FP = ((pred==1) & (y_test==0)).sum()
         TN = ((pred==0) & (y_test==0)).sum()
@@ -318,7 +330,8 @@ class machine_learning:
         f1 = f1_score(y_test, pred)
         accu = accuracy_score(y_test, pred)
         
-        return roc_auc,spe,sen,pre,f1,accu
+
+        return roc_auc,aupr,mcc,spe,sen,pre,f1,accu
 
     def cohort_validation(self,cohorts,metric):
         evals = pd.DataFrame(columns = cohorts, index = cohorts)
@@ -366,13 +379,14 @@ for i in cohorts:
 
 #Cohort-to-cohort & LOCO
 
-def validation_plot(plot_heatmap):
+def validation_plot(plot_heatmap, metric):
     max_plot = np.array(plot_heatmap.max()).max()
     min_plot = np.array(plot_heatmap.min()).min()
 
     sns.set(font_scale=1.5)
     grid_kws = {"height_ratios":(lc,1,1),"width_ratios":(lc,1)}
     f, axs= plt.subplots(3,2, gridspec_kw=grid_kws)
+    f.suptitle("Internal validation "+metric, fontsize=20, fontweight='bold', y=1.05)
 
     sns.heatmap(plot_heatmap.iloc[0:lc,0:lc],cmap="YlGnBu", annot = True, ax = axs[0,0],vmin=min_plot,vmax=max_plot,cbar = False,fmt='.2')
     axs[0,0].xaxis.set_ticks_position('top')
@@ -385,18 +399,21 @@ def validation_plot(plot_heatmap):
     sns.heatmap(pd.DataFrame(plot_heatmap.loc['Average','Average'],index = ["Average"],columns = ["Average"]),cmap="YlGnBu", annot = True, ax = axs[1,1],vmin=min_plot,vmax=max_plot,cbar = False,xticklabels=False,yticklabels=False,fmt='.2')
     sns.heatmap(pd.DataFrame(plot_heatmap.loc['LOCO','Average'],index = ["LODO"],columns = ["Average"]),cmap="YlGnBu", annot = True, ax = axs[2,1],vmin=min_plot,vmax=max_plot,cbar = False,xticklabels = False,yticklabels=False,fmt='.2')
     plt.subplots_adjust(wspace =.05, hspace =.1)
+
     return plt
 
-metrics = ['AUC','Specificity','Sensitivity','Precision','F1','Accuracy']
+metrics = ['AUC','AUPR','MCC','Specificity','Sensitivity','Precision','F1','Accuracy']
 lc = len(cohorts)
 plt.rcParams['pdf.fonttype'] = 42
 plt.rcParams['ps.fonttype'] = 42
-for i in range(6):
+for i in range(8):
     evals = ML.cohort_validation(cohorts,i)
     evals.to_csv(args.Workplace+args.output+"_"+args.classifier+'_validation_'+metrics[i]+'.txt',sep = '\t')
     
     plot_heatmap = pd.DataFrame(evals, dtype='float')
-    fig = validation_plot(plot_heatmap)
+    fig = validation_plot(plot_heatmap,metrics[i])
+    #fig.title("Internal validation", fontsize=20, fontweight='bold', pad=20)
     fig.savefig(args.Workplace+args.output+"_"+args.classifier+'_validation_'+metrics[i]+'.pdf',bbox_inches = 'tight')
+    fig.savefig(args.Workplace+args.output+"_"+args.classifier+'_validation_'+metrics[i]+'.svg',bbox_inches = 'tight',format = 'svg')
 print("FINISH")
 

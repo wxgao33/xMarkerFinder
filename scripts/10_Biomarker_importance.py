@@ -14,6 +14,8 @@ from sklearn.svm import SVC,LinearSVC
 from sklearn.metrics import roc_curve,auc,recall_score,precision_score,f1_score,accuracy_score,roc_auc_score
 from sklearn.inspection import permutation_importance
 from scipy import interp
+import seaborn as sns
+import scipy.stats as stats
 import matplotlib.pyplot as plt
 import argparse
 
@@ -24,8 +26,10 @@ parser.add_argument('--metadata','-m',help = 'input file : metadata')
 parser.add_argument('--profile','-p',help = 'input file : microbial profile')
 parser.add_argument('--exposure','-e',help = 'input param : the experiment group(exposure) of interest')
 parser.add_argument('--group','-g',help = 'input param : the column name of experimental interest(group) in metadata')
+parser.add_argument('--cohort','-b',help = 'input param : batch(cohort) column name')
 parser.add_argument('--classifier','-c',help = 'input param : selected classifier')
 parser.add_argument('--hyperparameter','-r',help = 'input param : tuned hyperparameters')
+parser.add_argument('--number','-n',help = 'input param : number for biomarker abundance visualization')
 parser.add_argument('--seed','-s',help = 'input param : random seed')
 parser.add_argument('--output','-o',help = 'output file prefix: marker importance result')
 args = parser.parse_args()
@@ -34,6 +38,7 @@ metadata = pd.read_table(args.Workplace+args.metadata,sep = '\t',index_col = 0)
 opt_biomarker = pd.read_table(args.Workplace+args.profile,sep = '\t',index_col=0)
 data_group = np.array([1 if i== str(args.exposure) else 0 for i in metadata[str(args.group)]])
 RANDOM_SEED = int(args.seed)
+number = int(args.number)
 opt_clf = args.classifier
 
 params = {}
@@ -86,6 +91,44 @@ def plot_feature_imps(plot):
 plot= pd.read_table(args.Workplace+args.output+"_"+args.classifier+"_biomarker_importance.txt",sep = '\t',index_col = 0).T
 
 feature_plot = plot_feature_imps(plot)
+feature_plot.title("Biomarker permutation importance", fontsize=20, fontweight='bold', pad=20)
 feature_plot.savefig(args.Workplace+args.output+"_"+args.classifier+'_biomarker_importance.pdf',bbox_inches = 'tight')
+feature_plot.savefig(args.Workplace+args.output+"_"+args.classifier+'_biomarker_importance.svg',bbox_inches = 'tight',format = 'svg')
+
+#distribution plot
+def add_significance_marker(ax, x1, x2, y, h, text, color='black'):
+    ax.plot([x1, x1, x2, x2], [y, y+h, y+h, y], lw=1.5, c=color)
+    ax.text((x1+x2)*0.5, y+h, text, ha='center', va='bottom', color=color, fontsize=12)
+
+feature_importances = feature_perm_imp
+top_features = feature_importances.T['importances_mean'].sort_values(ascending=False).head(number).index
+
+metadata = metadata.loc[opt_biomarker.index]
+
+for feature in top_features:
+    feature_data = pd.DataFrame({
+        'Abundance': opt_biomarker[feature],
+        'Cohort': metadata[args.cohort],  
+        'Group': metadata[args.group]   
+    }).reset_index(drop=True)
+    plt.figure(figsize=(12, 8))
+    ax = sns.boxplot(x='Cohort', y='Abundance', hue='Group', data=feature_data)
+
+    cohorts = feature_data['Cohort'].unique()
+    groups = feature_data['Group'].unique()
+
+    for i, cohort in enumerate(cohorts):
+        group_data = [feature_data[(feature_data['Cohort'] == cohort) & (feature_data['Group'] == group)]['Abundance'] for group in groups]
+
+        if len(group_data[0]) > 0 and len(group_data[1]) > 0:
+            stat, p_value = stats.ranksums(group_data[0], group_data[1])
+
+            star = '*' if p_value < 0.05 else 'ns'
+            add_significance_marker(ax, i - 0.2, i + 0.2, feature_data['Abundance'].max() * 1.05, 0.02 * feature_data['Abundance'].max(), star)
+
+
+    plt.savefig(f"{args.Workplace}{args.output}_{args.classifier}_feature_{feature}_boxplot.pdf", bbox_inches='tight')
+    plt.savefig(f"{args.Workplace}{args.output}_{args.classifier}_feature_{feature}_boxplot.svg", format='svg', bbox_inches='tight')
+    plt.close()  
 
 print("FINISH")

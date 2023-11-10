@@ -48,7 +48,7 @@ set.seed(opts$seed)
 exposure <- opts$exposure
 Group <- factor(metadata[,exposure])
 
-boruta <- Boruta(x=feat_abd, y=Group, pValue=0.05, mcAdj=T,maxRuns=1000)
+boruta <- Boruta(x=feat_abd, y=Group, pValue=0.05, mcAdj=T,maxRuns=100)
 print(table(boruta$finalDecision))
 
 #extract feature
@@ -58,8 +58,8 @@ boruta.variable.imp.use <- boruta$ImpHistory[,feature]
 feature_importance <- apply(boruta.variable.imp.use,2,mean)
 feature_importance <- data.frame(sort(feature_importance,decreasing = TRUE))
 selected_features <- feat_abd[,rownames(feature_importance)]
-write.table(feature_importance,file = paste(opts$workplace,opts$output,"_boruta_feature_imp.txt",sep=''),sep = '\t')
-write.table(selected_features,file = paste(opts$workplace,opts$output,"_boruta_selected_feature.txt",sep=''),sep = '\t')
+write.table(feature_importance,file = paste(opts$workplace,opts$output,"_boruta_feature_imp.txt",sep=''),sep = '\t',col.names = NA)
+write.table(selected_features,file = paste(opts$workplace,opts$output,"_boruta_selected_feature.txt",sep=''),sep = '\t',col.names = NA)
 
 print("FINISH")
 
