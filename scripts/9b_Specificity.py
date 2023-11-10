@@ -12,6 +12,7 @@ from numpy import interp
 import matplotlib.pyplot as plt
 import argparse
 import seaborn as sns
+from scipy.stats import wilcoxon
 from mpl_toolkits.axes_grid1 import ImageGrid
 
 
@@ -22,6 +23,8 @@ plt.rcParams['ps.fonttype'] = 42
 parser = argparse.ArgumentParser(description = "Specificity assessment & plot")
 parser.add_argument('--Workplace','-W',help = 'Workplace : Input and output work place')
 parser.add_argument('--profile','-p',help = 'input file : optimal biomarkers')
+parser.add_argument('--external_metadata','-q',help = 'input file : test set metadata')
+parser.add_argument('--external_profile','-l',help = 'input file : test set microbial profile')
 parser.add_argument('--other_metadata','-a',help = 'input file : test set metadata')
 parser.add_argument('--other_profile','-x',help = 'input file : test set microbial profile')
 parser.add_argument('--exposure','-e',help = 'input param : the control group name')
@@ -35,6 +38,13 @@ args = parser.parse_args()
 
 
 opt_biomarker = pd.read_table(args.Workplace+args.profile,sep = '\t',index_col=0)
+
+test_metadata = pd.read_table(args.Workplace+args.external_metadata,sep = '\t',index_col = 0)
+test_data = pd.read_table(args.Workplace+args.external_profile,sep = '\t',index_col=0)
+test_data_group = np.array([0 if i== str(args.exposure) else 1 for i in test_metadata[str(args.group)]])
+test_data = test_data.loc[:,test_data.columns.isin(opt_biomarker.columns)]
+test_data = test_data.fillna(0)
+
 
 ex_metadata = pd.read_table(args.Workplace+args.other_metadata,sep = '\t',index_col = 0)
 ex_data = pd.read_table(args.Workplace+args.other_profile,sep = '\t',index_col=0)
@@ -121,15 +131,56 @@ for i in cases:
     for j in range(1,11,1):
         temp_result = ML.model_construction(temp,temp_group,best_param,j,5)
         auc_comparison.at[j,i]=temp_result[2]
+
+test_groups = list(set(test_metadata[args.group]))
+test_case_group = test_groups[0] if test_groups[1] == str(args.exposure) else test_groups[1]
+
+auc_comparison.insert(0,test_case_group,np.nan)
+for j in range(1,11,1):
+    temp_result = ML.model_construction(test_data,test_data_group,best_param,j,5)
+    auc_comparison.at[j,test_case_group]=temp_result[2]
+
 auc_comparison.to_csv(args.Workplace+args.output+"_specificity_result.txt", sep = '\t')
 
-#fig = plt.figure(figsize=(8,6))
-fig = sns.set_theme(style="white")
-fig = sns.boxplot(data = auc_comparison)
-fig = sns.swarmplot(data = auc_comparison)
-fig.set_ylabel('AUC')
-fig.set_xticklabels(auc_comparison.columns)
+p_values = []
+first_column_data = auc_comparison.iloc[:, 0]
+
+for i in range(1, len(auc_comparison.columns)):
+    _, p_val = wilcoxon(first_column_data, auc_comparison.iloc[:, i], alternative='two-sided')
+    p_values.append(p_val)
+
+significance_markers = []
+for p in p_values:
+    if p < 0.001:
+        significance_markers.append('***')
+    elif p < 0.01:
+        significance_markers.append('**')
+    elif p < 0.05:
+        significance_markers.append('*')
+    else:
+        significance_markers.append('ns')  
+
+
+sns.set_theme(style="white")
+fig, ax = plt.subplots(figsize=(10, 6))
+sns.boxplot(data=auc_comparison, ax=ax)
+sns.swarmplot(data=auc_comparison, ax=ax)
+
+ax.set_ylabel('AUC')
+ax.set_xticklabels(auc_comparison.columns)
+ax.set_title("Biomarker specificity assessment", fontsize=20, fontweight='bold', pad=20)
+
+
+y_max = auc_comparison.max().max()  
+
+for i, marker in enumerate(significance_markers):
+    y_text = y_max + 0.01 + i*0.02  
+    #x_offset = 0.1 + i*0.05  
+    x1, x2 = 0 , i+1  
+    ax.plot([x1, x1, x2, x2], [y_text-0.01, y_text, y_text, y_text-0.01], lw=1.5, color='black')
+    ax.text((x1+x2)*.5, y_text, marker, ha='center', va='center', color='black', fontsize=15)
 
 plt.savefig(args.Workplace+args.output+'_specificity_auc.pdf',bbox_inches = 'tight')
+plt.savefig(args.Workplace+args.output+'_specificity_auc.svg',bbox_inches = 'tight',format = 'svg')
 
 print("FINISH")

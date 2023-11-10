@@ -10,7 +10,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.svm import SVC,LinearSVC
-from sklearn.metrics import roc_curve,auc,recall_score,precision_score,f1_score,accuracy_score,roc_auc_score
+from sklearn.metrics import roc_curve,auc,recall_score,precision_score,precision_recall_curve,f1_score,accuracy_score,roc_auc_score,matthews_corrcoef
 import argparse
 
 
@@ -53,11 +53,14 @@ class machine_learning:
         FN = ((pred==0) & (y==1)).sum()
         spe = TN / float(FP + TN)
         sen = recall_score(y, pred)
+        precision, recall, _ = precision_recall_curve(y,proba)
+        aupr = auc(recall,precision)
         precision = precision_score(y, pred)
         accuracy = accuracy_score(y, pred)
-        auc = roc_auc_score(y, proba)
+        auroc = roc_auc_score(y, proba)
         f1 = f1_score(y, pred)
-        return [sen, spe, precision,accuracy, f1, auc]
+        mcc = matthews_corrcoef(y,proba)
+        return [sen, spe, precision, accuracy, f1, auroc, aupr, mcc]
             
     def try_Classifiers(self,X, Y): 
         results=[]
@@ -78,14 +81,15 @@ class machine_learning:
             row.extend(cross_scores)
             results.append(row)
         select_results = pd.DataFrame(results, columns=['classifier', 'self_sensitivity', 'self_specifity',
-                                                 'self_precision','self_accuracy', 'self_f1', 'self_auc', 'cross_sensitivity',
+                                                 'self_precision','self_accuracy', 'self_f1','self_auroc', 'self_aupr','self_mcc', 'cross_sensitivity',
                                                  'cross_specifity', 'cross_precision', 'cross_accuracy', 'cross_f1',
-                                                 'cross_auc'])
+                                                 'cross_auroc','cross_aupr','cross_mcc'])
         return select_results
 
 #classifier selection
 ML = machine_learning()
 
 result = ML.try_Classifiers(data.values,data_group)
+result = result[['classifier','cross_auroc','cross_mcc','cross_aupr','cross_accuracy','cross_precision','cross_specifity','cross_sensitivity','cross_f1']]
 result.to_csv(args.Workplace+args.output+"_classifier_selection.txt",sep = '\t')
 print("FINISH")

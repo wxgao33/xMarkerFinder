@@ -11,7 +11,7 @@ if (TRUE){
                 help="Input workplace [default %default]"),
     make_option(c("-m", "--metadata"), type="character", default="metadata.txt",
                 help="metadata file [default %default]"),
-    make_option(c("-p", "--profile"), type="character", default="relative_abundance.txt",
+    make_option(c("-p", "--profile"), type="character", default="normalized_abundance.txt",
                 help="feature abundance profile[default %default]"),
     make_option(c("-b", "--batch"), type="character", default="Cohort",
                 help="the column name of batch(cohort) in metadata [default %default]"),
@@ -44,6 +44,7 @@ for(p in package_list){
 #import data and preprocess
 metadata <- read.table(file = paste(opts$workplace,opts$metadata,sep=''),sep = '\t',header =  TRUE,row.names = 1, stringsAsFactors = FALSE, check.names = FALSE)
 feat_abd <- read.csv(file = paste(opts$workplace,opts$profile,sep=''),sep = '\t',header =  TRUE,row.names = 1, stringsAsFactors = FALSE, check.names = FALSE)
+print(colnames(metadata))
 batch <- opts$batch
 feat_abd[is.na(feat_abd)]<-0
 threshold <-opts$threshold  
@@ -58,7 +59,7 @@ filter.f <- function(dat, Num){
   tmp <- cbind(dat,data.frame(SD),data.frame(num_0),data.frame(ave_abun))
   colnames(tmp)[(ncol(dat)+1):(ncol(dat)+3)] <- c("sd","count0",'avebun')
   #dat_filter <- tmp %>% filter(count0 <= as.numeric(Num*0.9) & sd >0) 
-  dat_filter <- tmp[(tmp$count0 <= as.numeric(Num*0.8)) & (tmp$sd >0) & (tmp$avebun > 0.0001),]
+  dat_filter <- tmp[(tmp$count0 <= as.numeric(Num*0.8)) & (tmp$sd >0),]
   #dat_filter <- tmp[(tmp$count0 <= as.numeric(Num*0.8)) & (tmp$sd >0),]
   return(dat_filter[,1:ncol(dat)])
 }
@@ -80,7 +81,7 @@ feat_filter = feat_abd[f.idx.data,]
 feat.filter <- t(filter.f(feat_filter,ncol(feat_filter)))
 
 cat('Retaining', ncol(feat.filter), 'features after quality control...\n')
-write.table(feat.filter,file = paste(opts$workplace,opts$output,"_filtered_abundance.txt",sep=''),sep = '\t')
+write.table(feat.filter,file = paste(opts$workplace,opts$output,"_filtered_abundance.txt",sep=''),sep = '\t',col.names = NA)
 
 print("FINISH")
 

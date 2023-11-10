@@ -7,7 +7,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.svm import SVC,LinearSVC
-from sklearn.metrics import roc_curve,auc,recall_score,precision_score,f1_score,accuracy_score,roc_auc_score
+from sklearn.metrics import roc_curve,auc,recall_score,precision_score,precision_recall_curve,f1_score,accuracy_score,roc_auc_score,matthews_corrcoef
 from numpy import interp
 import matplotlib.pyplot as plt
 import argparse
@@ -74,6 +74,10 @@ class machine_learning:
         pred = clf.predict(ex_data)
         sen = recall_score(ex_data_group,pred)
 
+        precision, recall, _ = precision_recall_curve(ex_data_group,pred)
+        aupr = auc(recall,precision)
+        mcc = matthews_corrcoef(ex_data_group,pred)
+
         TP = ((pred==1) & (ex_data_group==1)).sum()
         FP = ((pred==1) & (ex_data_group==0)).sum()
         TN = ((pred==0) & (ex_data_group==0)).sum()
@@ -86,7 +90,7 @@ class machine_learning:
         roc_auc = auc(fpr, tpr)
         accu = accuracy_score(ex_data_group, pred)
         
-        return clf, roc_auc,spe,sen,pre,f1,accu,fpr, tpr
+        return clf, roc_auc,aupr, mcc,spe,sen,pre,f1,accu,fpr, tpr
 
     def plot_auc(self,fpr,tpr,auc):
         font1 = {'weight' : 'normal','size': 12}
@@ -115,13 +119,15 @@ class machine_learning:
 ML = machine_learning()
 
 #Test
-_, roc_auc,spe,sen,pre,f1,accu,fpr, tpr= ML.test_model(opt_biomarker,data_group,ex_data,ex_data_group, best_param)
-test_result = pd.DataFrame([roc_auc,spe,sen,pre,f1,accu],columns = ['Value'],index = ['AUC','Specificity','Sensitivity','Precision','F1 Score','Accuracy'])
+_, roc_auc,aupr,mcc,spe,sen,pre,f1,accu,fpr, tpr= ML.test_model(opt_biomarker,data_group,ex_data,ex_data_group, best_param)
+test_result = pd.DataFrame([roc_auc,aupr,mcc,spe,sen,pre,f1,accu],columns = ['Value'],index = ['AUC','AUPR','MCC','Specificity','Sensitivity','Precision','F1 Score','Accuracy'])
 test_result.to_csv(args.Workplace+args.output+"_"+args.classifier+"_test_result.txt", sep = '\t')
 
 
 #Plot
 auc_fig = ML.plot_auc(fpr,tpr,roc_auc)
+auc_fig.title("ROC curve of external test", fontsize=20, fontweight='bold', pad=20)
 auc_fig.savefig(args.Workplace+args.output+"_"+args.classifier+"_test_auc.pdf",bbox_inches = 'tight')
+auc_fig.savefig(args.Workplace+args.output+"_"+args.classifier+"_test_auc.svg",bbox_inches = 'tight',format = 'svg')
 
 print("FINISH")

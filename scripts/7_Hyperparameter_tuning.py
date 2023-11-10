@@ -10,7 +10,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.svm import SVC,LinearSVC
-from sklearn.metrics import roc_curve,auc,recall_score,precision_score,f1_score,accuracy_score,roc_auc_score
+from sklearn.metrics import roc_curve,auc,recall_score,precision_score,precision_recall_curve,f1_score,accuracy_score,roc_auc_score,matthews_corrcoef
 from bayes_opt import BayesianOptimization, UtilityFunction 
 from scipy import interp
 import matplotlib.pyplot as plt
@@ -252,6 +252,8 @@ class machine_learning:
         pres = []
         f1s = []
         accus = []
+        mccs = []
+        auprs = []
         splitor = StratifiedKFold(n_splits=k_fold, shuffle=True,random_state=RANDOM_SEED) 
         clf = self.Method[opt_clf].set_params(**params)
         
@@ -271,6 +273,9 @@ class machine_learning:
             spe = TN / float(FP + TN)
             spes.append(spe)
             
+            precision, recall, _ = precision_recall_curve(y_test,pred)
+            aupr = auc(recall,precision)
+            auprs.append(aupr)
             pre = precision_score(y_test, pred)
             pres.append(pre)
             f1 = f1_score(y_test, pred)
@@ -279,6 +284,8 @@ class machine_learning:
             roc_auc = auc(fpr, tpr)
             spes.append(spe)
             aucs.append(roc_auc)
+            mcc = matthews_corrcoef(y_test,pred)
+            mccs.append(mcc)
             accu = accuracy_score(y_test, pred)
             accus.append(accu)
             
@@ -296,11 +303,13 @@ class machine_learning:
         mean_pre = np.mean(pres)
         mean_f1 = np.mean(f1s)
         mean_accu = np.mean(accus)
+        mean_aupr = np.mean(auprs)
+        mean_mcc = np.mean(mccs)
         
-        return clf, mean_auc,mean_spe,mean_sen,mean_pre,mean_f1,mean_accu,(plot_data, mean_fpr, mean_tpr, tprs,aucs, np.std(aucs))
+        return clf, mean_auc,mean_aupr,mean_mcc,mean_spe,mean_sen,mean_pre,mean_f1,mean_accu,(plot_data, mean_fpr, mean_tpr, tprs,aucs, np.std(aucs))
 
     def plot_auc(self,model_result):
-        lines, mean_fpr, mean_tpr, tprs, aucs, std_auc = model_result[7]
+        lines, mean_fpr, mean_tpr, tprs, aucs, std_auc = model_result[9]
         mean_auc = model_result[1]
         font1 = {'weight' : 'normal','size': 12}
         font2 = {'weight' : 'normal','size': 16}
@@ -348,7 +357,7 @@ for k,v in tune_result['params'].items():
 
 #Model construction and Cross validation
 model_result = ML.model_construction(opt_biomarker, data_group, tune_result['params'], k_fold=5)
-model_cv_value = pd.DataFrame(model_result[1:7],columns = ['Value'],index = ['AUC','Specificity','Sensitivity','Precision','F1','Accuracy'])
+model_cv_value = pd.DataFrame(model_result[1:9],columns = ['Value'],index = ['AUC','AUPR','MCC','Specificity','Sensitivity','Precision','F1','Accuracy'])
 model_cv_value.to_csv(args.Workplace+args.output+"_"+args.classifier+"_optimal_cross_validation.txt", sep = '\t')
 print(model_cv_value)
 
@@ -356,7 +365,10 @@ print(model_cv_value)
 plt.rcParams['pdf.fonttype'] = 42
 plt.rcParams['ps.fonttype'] = 42
 auc_fig = ML.plot_auc(model_result)
+auc_fig.title("ROC curve of the best model", fontsize=20, fontweight='bold', pad=20)
 auc_fig.savefig(args.Workplace+args.output+"_"+args.classifier+"_cross_validation_auc.pdf",bbox_inches = 'tight')
+auc_fig.savefig(args.Workplace+args.output+"_"+args.classifier+"_cross_validation_auc.svg",bbox_inches = 'tight',format = 'svg')
+
 
 print("FINISH")
 
