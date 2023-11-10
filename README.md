@@ -362,7 +362,7 @@ specificity_add_auc.pdf: the visualization of the specificity_result.txt.
 #### 10.	Biomarker importance.
 Permutation feature importance is employed here to evaluate biomarkers’ contributions in the best-performing classification model.  
 ```
-$ python 10_Biomarker_importance.py -W /workplace/ -m train_metadata.txt -p candidate_biomarker.txt -g Group -e exposure -c classifier -r best_param.txt -s 0 -o TEST
+$ python 10_Biomarker_importance.py -W /workplace/ -m train_metadata.txt -p candidate_biomarker.txt -g Group -b Cohort -e exposure -c classifier -r best_param.txt -s 0 -o TEST
 ```
 ```
 -p input candidate biomarkers (output file of Step 6)
