@@ -47,7 +47,9 @@ if(norm_method == "REL"){
   data_norm <- t(apply(feat_abd,1, function(x){x/sum(x)}))
   data_norm <- t(apply(data_norm, 1, function(x) asin(sqrt(x))))
 } else if (norm_method =="CLR"){
-  data_norm <- clr(feat_abd)
+  data_norm <- t(apply(feat_abd,1, function(x){x/sum(x)}))
+  data_norm <- data_norm + 1e-6
+  data_norm <- clr(data_norm)
 } else if (norm_method =="TMM"){
   data_norm = t(feat_abd)
   dge <- DGEList(counts = data_norm)
